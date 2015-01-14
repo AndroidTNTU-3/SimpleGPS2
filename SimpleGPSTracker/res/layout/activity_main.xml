@@ -1,0 +1,199 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.unrealedz.gpstracker.MainActivity"
+    tools:ignore="MergeRootFrame" >
+    
+    <LinearLayout    
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:orientation="vertical">
+    
+        
+	    <LinearLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content" 
+	    android:orientation="horizontal">
+	    
+	        <Button
+	        android:id="@+id/bStartService"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:text="@string/b_start" />
+	    
+	    	<Button
+	        android:id="@+id/bStopService"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:text="@string/b_stop" />
+	     
+	    </LinearLayout>
+	    
+	    <LinearLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content" 
+	    android:orientation="horizontal">
+	    
+	         <Button
+	        android:id="@+id/bViewMap"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:text="@string/b_map" />
+	    
+	    	<Button
+	        android:id="@+id/bSendServer"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:text="@string/b_send" />
+	     
+	    </LinearLayout>
+
+	   <TableLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content" >
+
+	        <TableRow
+	            android:id="@+id/tableRow1"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content" >
+
+	            <TextView
+	                android:id="@+id/tvLabelProvider"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_margin="3dp"
+	                android:text="@string/providers" />
+
+	            <TextView
+	                android:id="@+id/tvProvidersValue"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_margin="3dp"
+	                android:textStyle="bold"
+	                android:text="" />
+
+	        </TableRow>
+
+	        <TableRow
+	            android:id="@+id/tableRow2"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content" >
+	            
+	            <TextView
+	                android:id="@+id/tvLabelTravelMode"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_margin="3dp"
+	                android:text="@string/travel_mode_title" />
+
+	            <TextView
+	                android:id="@+id/tvTravelModeValue"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_margin="3dp"
+	                android:textStyle="bold"
+	                android:text="" />
+	        </TableRow>
+
+	        <TableRow
+	            android:id="@+id/tableRow3"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content" >
+	            
+	            <TextView
+	                android:id="@+id/tvLabelRefreshTime"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_margin="3dp"
+	                android:text="@string/refresh_time_title" />
+
+	            <TextView
+	                android:id="@+id/tvRefreshTimeValue"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_margin="3dp"
+	                android:textStyle="bold"
+	                android:text="" />
+	            
+	        </TableRow>
+	        
+	        <TableRow
+	            android:id="@+id/tableRow4"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content" >
+	            
+	            <TextView
+	                android:id="@+id/tvGPS"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_margin="3dp"
+	                android:text="@string/gps" />
+
+	            <TextView
+	                android:id="@+id/tvGPSValue"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_margin="3dp"
+	                android:textStyle="bold"
+	                android:text="" />
+	            
+	        </TableRow>
+	        
+	        	<TableRow
+	            android:id="@+id/tableRow5"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content" >
+	            
+	            <TextView
+	                android:id="@+id/tvNetwork"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_margin="3dp"
+	                android:text="@string/network" />
+
+	            <TextView
+	                android:id="@+id/tvNetworkValue"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_margin="3dp"
+	                android:textStyle="bold"
+	                android:text="" />
+	            
+	        </TableRow>
+	        
+	        <TableRow
+	            android:id="@+id/tableRow6"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content" >
+	            
+	   		<TextView
+		       android:id="@+id/textView1"
+		       android:layout_width="wrap_content"
+		       android:layout_height="wrap_content"
+		       android:layout_margin="3dp"
+		       android:text="Satellite" />
+
+	         <TextView
+	             android:id="@+id/tvSatelliteCount"
+	             android:layout_width="wrap_content"
+	             android:layout_height="wrap_content"
+	             android:layout_margin="3dp"
+	             android:textStyle="bold"
+	             android:text="" />
+	            
+	        </TableRow>
+
+
+	    </TableLayout>
+
+
+
+	 </LinearLayout> 
+
+</FrameLayout>
