@@ -26,7 +26,6 @@ public class PointAdapter implements PoliLoaderCallBack{
 	private GPSInfoHelper helper;
 	private KalmanInfoHelper kalmanHelper;
 	private List<GPSInfo> list;
-	private ArrayList<LatLng> points = null;
 	PointAdapterCallBack pointAdapterCallBack;
 	
 	public static interface PointAdapterCallBack{
@@ -74,19 +73,21 @@ public class PointAdapter implements PoliLoaderCallBack{
 	
 	public void startCompute(List<GPSInfo> list){
 		this.list = list;
+		
 		//because a parameter MAX_WAYPOINTS must be less 8 divide a array into parts
 		ArrayList<GPSInfo> list8 = new ArrayList<GPSInfo>();
-		for(int i=0; i<list.size() ; i++){
-						
-			list8 = new ArrayList<GPSInfo>();
-				for(int j=0; j<8; j++){
-					if ((j + i*7) < list.size()) list8.add(list.get(j + i*7));
-				}
-				 
-			//get computed point from the google server	
-			//last point
-			if(list8.size() > 2) getTrack(list8);
-		}
+			
+			for(int i=0; i<list.size() ; i = i+7){
+	            list8 = new ArrayList<GPSInfo>();
+	            for(int j=0; j<8; j++){
+	                if ((j + i) < list.size()) list8.add(list.get(j + i));
+	                else break;                
+	            }
+	            
+	            //get computed point from the google server	if point`s count more then 2 
+	            if(list8.size() > 2) getTrack(list8);
+	        }
+			
 	}
 	
 	private void getTrack(ArrayList<GPSInfo> list8){
@@ -106,12 +107,20 @@ public class PointAdapter implements PoliLoaderCallBack{
 	private String getMapsApiDirectionsUrl(ArrayList<GPSInfo> list8) {
 		
 		StringBuilder waypoints = null;
+		int listSize = list8.size();
 		
 		waypoints = new StringBuilder();
 		waypoints.append("waypoints=optimize:true|");
 		
 		//formation request for google server
 
+		//set origin parameter
+		String origin = String.valueOf(list8.get(0).getLatitude()) + "," + String.valueOf(list8.get(0).getLongitude());
+		//set destination parameter
+		String destination = String.valueOf(list8.get(listSize-1).getLatitude()) + "," + String.valueOf(list8.get(listSize-1).getLongitude());
+		
+		list8.remove(listSize-1);
+		list8.remove(0);
 		for(GPSInfo info: list8 ){
 			Log.i("DEBUG", " Thislat:" + Double.toString(info.getLongitude()));
 			waypoints.append(String.valueOf(info.getLatitude()));
@@ -119,7 +128,7 @@ public class PointAdapter implements PoliLoaderCallBack{
 			waypoints.append(String.valueOf(info.getLongitude()));
 			waypoints.append("|");
 		}
-		
+				
 		waypoints.setLength(waypoints.length() - 1);
 		waypoints.append("&");
 		waypoints.append("sensor=true&mode=");
@@ -128,7 +137,7 @@ public class PointAdapter implements PoliLoaderCallBack{
 		String params = waypoints.toString();
 		String output = "json";
 		String url = "https://maps.googleapis.com/maps/api/directions/"
-				+ output + "?" + params;
+				+ output + "?" + "origin=" + origin + "&" + "destination=" + destination + "&" + params;
 		 Log.i("DEBUG", " lat:" + url);
 		return url;
 		
@@ -136,21 +145,38 @@ public class PointAdapter implements PoliLoaderCallBack{
 	
 	//callback: driving track on map after get response from google server 
 	@Override
-	public void setPoli(List<List<HashMap<String, String>>> routes) {
-		
+	public synchronized void setPoli(List<List<HashMap<String, String>>> routes) {
+		ArrayList<LatLng> points = null;
 		// traversing through routes
-			
-		for (int i = 0; i < routes.size(); i++) {
-			points = new ArrayList<LatLng>();
-			List<HashMap<String, String>> path = routes.get(i);
+		
+		double templat = 0;
+		double templng = 0;
+		points = new ArrayList<LatLng>();
 
+		for (int i = 0; i < routes.size(); i++) {
+
+			List<HashMap<String, String>> path = routes.get(i);
+			
 			for (int j = 0; j < path.size(); j++) {
+
 				HashMap<String, String> point = path.get(j);
 
 				double lat = Double.parseDouble(point.get("lat"));
 				double lng = Double.parseDouble(point.get("lng"));
-				LatLng position = new LatLng(lat, lng);
-				points.add(position);
+				
+				/*
+				 * remove duplicated points,
+				 * since polylines decoded as <latLng1, latLng2>, <latLng2, latLng3>, <latLng3, latLng4>...
+				 */
+
+				if((templat != lat) | (templng != lng)){
+					LatLng position = new LatLng(lat, lng);
+					points.add(position);
+				}
+
+				templat = lat;
+				templng = lng;
+
 			}
 				
 		}

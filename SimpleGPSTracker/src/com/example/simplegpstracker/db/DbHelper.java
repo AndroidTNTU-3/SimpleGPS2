@@ -24,6 +24,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String TRACKER_DB_ACCURACY = "accuracy";
     public static final String TRACKER_DB_ACCEL = "acceleration";
     public static final String TRACKER_DB_SPEED = "speed";
+    public static final String TRACKER_DB_BEARING = "bearing";
     public static final String TRACKER_DB_GYR_X = "gyrx";
     public static final String TRACKER_DB_GYR_Y = "gyry";
     public static final String TRACKER_DB_GYR_Z = "gyrz";
@@ -36,25 +37,25 @@ public class DbHelper extends SQLiteOpenHelper {
             + "( _id INTEGER PRIMARY KEY AUTOINCREMENT, " + TRACKER_DB_ID + " TEXT," + TRACKER_DB_LATITUDE + " DOUBLE," 
     		+ TRACKER_DB_LONGITUDE + " DOUBLE," + TRACKER_DB_ACCURACY + " FLOAT," + TRACKER_DB_GYR_X + " DOUBLE," 
             + TRACKER_DB_GYR_Y + " FLOAT," +  TRACKER_DB_GYR_Z + " FLOAT," + TRACKER_DB_ACCEL + " DOUBLE," + TRACKER_DB_SPEED + " FLOAT,"
-            + TRACKER_DB_TITLE + " TEXT," + TRACKER_DB_TIME + " LONG);";
+            + TRACKER_DB_BEARING + " DOUBLE," + TRACKER_DB_TITLE + " TEXT," + TRACKER_DB_TIME + " LONG);";
     
     public static final String CREATE_DB_TRACKER_KALMAN_TABLE = "CREATE TABLE IF NOT EXISTS " + TRACKER_KALMAN_DB_TABLE
             + "( _id INTEGER PRIMARY KEY AUTOINCREMENT, " + TRACKER_DB_ID + " TEXT," + TRACKER_DB_LATITUDE + " DOUBLE," 
     		+ TRACKER_DB_LONGITUDE + " DOUBLE," + TRACKER_DB_ACCURACY + " FLOAT," + TRACKER_DB_GYR_X + " DOUBLE," 
             + TRACKER_DB_GYR_Y + " FLOAT," +  TRACKER_DB_GYR_Z + " FLOAT," + TRACKER_DB_ACCEL + " DOUBLE," + TRACKER_DB_SPEED + " FLOAT,"
-            + TRACKER_DB_TITLE + " TEXT," + TRACKER_DB_TIME + " LONG);";
+            + TRACKER_DB_BEARING + " DOUBLE," + TRACKER_DB_TITLE + " TEXT," + TRACKER_DB_TIME + " LONG);";
     
     public static final String CREATE_DB_TRACKER_KALMANT_TABLE = "CREATE TABLE IF NOT EXISTS " + TRACKER_KALMANT_DB_TABLE
             + "( _id INTEGER PRIMARY KEY AUTOINCREMENT, " + TRACKER_DB_ID + " TEXT," + TRACKER_DB_LATITUDE + " DOUBLE," 
     		+ TRACKER_DB_LONGITUDE + " DOUBLE," + TRACKER_DB_ACCURACY + " FLOAT," + TRACKER_DB_GYR_X + " DOUBLE," 
             + TRACKER_DB_GYR_Y + " FLOAT," +  TRACKER_DB_GYR_Z + " FLOAT," + TRACKER_DB_ACCEL + " DOUBLE," + TRACKER_DB_SPEED + " FLOAT,"
-            + TRACKER_DB_TITLE + " TEXT," + TRACKER_DB_TIME + " LONG);";
+            + TRACKER_DB_BEARING + " DOUBLE," + TRACKER_DB_TITLE + " TEXT," + TRACKER_DB_TIME + " LONG);";
     
     public static final String CREATE_DB_TRACKER_PROCESSED_TABLE = "CREATE TABLE IF NOT EXISTS " + TRACKER_PROCESSED_DB_TABLE
             + "( _id INTEGER PRIMARY KEY AUTOINCREMENT, " + TRACKER_DB_ID + " TEXT," + TRACKER_DB_LATITUDE + " DOUBLE," 
     		+ TRACKER_DB_LONGITUDE + " DOUBLE," + TRACKER_DB_ACCURACY + " FLOAT," + TRACKER_DB_GYR_X + " DOUBLE," 
             + TRACKER_DB_GYR_Y + " FLOAT," +  TRACKER_DB_GYR_Z + " FLOAT," + TRACKER_DB_ACCEL + " DOUBLE," + TRACKER_DB_SPEED + " FLOAT,"
-            + TRACKER_DB_TITLE + " TEXT," + TRACKER_DB_TIME + " LONG);";
+            + TRACKER_DB_BEARING + " DOUBLE," + TRACKER_DB_TITLE + " TEXT," + TRACKER_DB_TIME + " LONG);";
     
 
 	public DbHelper(Context context) {

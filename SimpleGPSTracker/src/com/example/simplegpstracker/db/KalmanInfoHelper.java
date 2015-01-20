@@ -31,7 +31,8 @@ public class KalmanInfoHelper {
         values.put(DbHelper.TRACKER_DB_LONGITUDE, gpsInfo.getLongitude());
         values.put(DbHelper.TRACKER_DB_ACCURACY, gpsInfo.getAccuracy());
         values.put(DbHelper.TRACKER_DB_ACCEL, gpsInfo.getAcceleration());
-        values.put(DbHelper.TRACKER_DB_SPEED, gpsInfo.getAcceleration());
+        values.put(DbHelper.TRACKER_DB_SPEED, gpsInfo.getSpeed());
+        values.put(DbHelper.TRACKER_DB_BEARING, gpsInfo.getBearing());
         values.put(DbHelper.TRACKER_DB_GYR_X, gpsInfo.getGyroscopex());
         values.put(DbHelper.TRACKER_DB_GYR_Y, gpsInfo.getGyroscopey());
         values.put(DbHelper.TRACKER_DB_GYR_Z, gpsInfo.getGyroscopez());
@@ -58,7 +59,8 @@ public class KalmanInfoHelper {
 				gpsInfo.setLongitude(cursor.getDouble(cursor.getColumnIndex(DbHelper.TRACKER_DB_LONGITUDE)));
 				gpsInfo.setAccuracy(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_ACCURACY)));
 				gpsInfo.setAcceleration(cursor.getDouble(cursor.getColumnIndex(DbHelper.TRACKER_DB_ACCEL)));
-				gpsInfo.setAcceleration(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_SPEED)));
+				gpsInfo.setSpeed(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_SPEED)));
+				gpsInfo.setBearing(cursor.getDouble(cursor.getColumnIndex(DbHelper.TRACKER_DB_BEARING)));
 				gpsInfo.setGyroscopex(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_GYR_X)));
 				gpsInfo.setGyroscopey(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_GYR_Y)));
 				gpsInfo.setGyroscopez(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_GYR_Z)));
@@ -88,7 +90,8 @@ public class KalmanInfoHelper {
 				gpsInfo.setLongitude(cursor.getDouble(cursor.getColumnIndex(DbHelper.TRACKER_DB_LONGITUDE)));
 				gpsInfo.setAccuracy(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_ACCURACY)));
 				gpsInfo.setAcceleration(cursor.getDouble(cursor.getColumnIndex(DbHelper.TRACKER_DB_ACCEL)));
-				gpsInfo.setAcceleration(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_SPEED)));
+				gpsInfo.setSpeed(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_SPEED)));
+				gpsInfo.setBearing(cursor.getDouble(cursor.getColumnIndex(DbHelper.TRACKER_DB_BEARING)));
 				gpsInfo.setGyroscopex(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_GYR_X)));
 				gpsInfo.setGyroscopey(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_GYR_Y)));
 				gpsInfo.setGyroscopez(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_GYR_Z)));

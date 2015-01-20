@@ -10,6 +10,7 @@ public class GPSInfo {
 	private long time;
 	private double acceleration;
 	private float speed;
+	private double bearing;
 	private float gyroscopex;
 	private float gyroscopey;
 	private float gyroscopez;
@@ -103,6 +104,13 @@ public class GPSInfo {
 		this.speed = speed;
 	}
 
+	public double getBearing() {
+		return bearing;
+	}
+
+	public void setBearing(double bearing) {
+		this.bearing = bearing;
+	}
 
 
 }

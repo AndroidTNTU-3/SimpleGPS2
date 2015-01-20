@@ -40,10 +40,10 @@ public class ToKalmanC {
 		kalmanInfo = new GPSInfo();
 
 		for(GPSInfo info: list){
-			if(info.getAccuracy() < 5){
+			//if(info.getAccuracy() < 5){
 				Log.i("DEBUG", "accuracy:" + info.getAccuracy());
 				fromKalmanManager(info);							
-			}
+			//}
 		}				
 	}
 		

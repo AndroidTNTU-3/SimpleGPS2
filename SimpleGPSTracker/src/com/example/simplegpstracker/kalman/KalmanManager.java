@@ -59,7 +59,7 @@ public class KalmanManager {
 
         	//mLatitudeTracker = new Tracker1D(TIME_STEP, COORDINATE_NOISE);
         	mLatitudeTracker = new Tracker1D(timeStepShared, COORDINATE_NOISE);
-            mLatitudeTracker.setState(position, location.getSpeed(), noise);
+            mLatitudeTracker.setState(position, 0.0, noise);
         }else{
         mLatitudeTracker.predict(0.0);
         mLatitudeTracker.update(position, noise);
@@ -72,7 +72,7 @@ public class KalmanManager {
         if (mLongitudeTracker == null) {
 
             mLongitudeTracker = new Tracker1D(timeStepShared, COORDINATE_NOISE);
-            mLongitudeTracker.setState(position, location.getSpeed(), noise);
+            mLongitudeTracker.setState(position, 0.0, noise);
         }else{
         mLongitudeTracker.predict(0.0);
         mLongitudeTracker.update(position, noise);

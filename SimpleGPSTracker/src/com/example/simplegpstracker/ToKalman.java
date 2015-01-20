@@ -27,7 +27,6 @@ public class ToKalman {
 	
 	ToKalman(List<GPSInfo> list, Context context){
 		location = new Location(KalmanManager.KALMAN_PROVIDER);
-		//km = new KalmanManager(context);
 		km = new KalmanManager(context);
 		this.list = list;
 		this.context = context;
@@ -40,10 +39,10 @@ public class ToKalman {
 		kalmanInfo = new GPSInfo();
 
 		for(GPSInfo info: list){
-			if(info.getAccuracy() < 5){
+			//if(info.getAccuracy() < 5){
 				Log.i("DEBUG", "accuracy:" + info.getAccuracy());
 				fromKalmanManager(info);							
-			}
+			//}
 		}				
 	}
 		
@@ -52,7 +51,7 @@ public class ToKalman {
 		Location kalmanLocation = new Location(KalmanManager.KALMAN_PROVIDER);
 		location.setLatitude(info.getLatitude());
 		location.setLongitude(info.getLongitude());
-		location.setAccuracy(info.getAccuracy());
+		location.setAccuracy(3);
 		location.setSpeed(info.getSpeed());
 		km.setParam(location);
  		kalmanLocation = km.getKalmanLocation();

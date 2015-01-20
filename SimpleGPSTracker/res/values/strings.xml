@@ -23,6 +23,7 @@
     <string name="action_kalman_c">KalmanC</string>
     <string name="action_show_markers">Markers</string>
     <string name="action_show_lines">Lines</string>
+    <string name="action_show_processed">Processed</string>
     
     <string name="dialog_warning_title">Warning</string>
     <string name="dialog_warning_button_ok">ОК</string>

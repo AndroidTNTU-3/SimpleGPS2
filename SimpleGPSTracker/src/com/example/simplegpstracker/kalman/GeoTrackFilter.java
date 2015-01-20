@@ -15,7 +15,7 @@ public class GeoTrackFilter {
 		 * path will be "smoothed". Free with free_filter after using.
 		 */
 
-		public GeoTrackFilter(double noise) {
+		public GeoTrackFilter(double noise, double timestep) {
 			/*
 			 * The state model has four dimensions: x, y, x', y' Each time step we
 			 * can only observe position, not velocity, so the observation vector
@@ -30,7 +30,7 @@ public class GeoTrackFilter {
 			 * physics model is not too important.
 			 */
 			f.state_transition.set_identity_matrix();
-			set_seconds_per_timestep(5.0);
+			set_seconds_per_timestep(timestep);
 
 			/* We observe (x, y) in each time step */
 			f.observation_model.set_matrix(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0);
@@ -107,7 +107,7 @@ public class GeoTrackFilter {
 		/*
 		 * See http://www.movable-type.co.uk/scripts/latlong.html for formulas
 		 */
-		double get_bearing() {
+		public double get_bearing() {
 			double x, y;
 			double[] latlon = get_lat_long();
 			double[] delta_latlon = get_velocity();

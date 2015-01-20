@@ -15,7 +15,11 @@
         android:showAsAction="always"
         android:title="@string/action_refresh"/>-->
         
-
+        <item
+        android:id="@+id/action_show_processed"
+        android:icon="@android:drawable/ic_dialog_map"
+        android:showAsAction="ifRoom"
+        android:title="@string/action_show_processed"/>
         
         <item
         android:id="@+id/action_show_kalman_g"

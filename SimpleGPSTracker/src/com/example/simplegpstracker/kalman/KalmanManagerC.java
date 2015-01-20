@@ -17,7 +17,8 @@ public class KalmanManagerC {
     private static final double METER_TO_DEG = 1.0 / DEG_TO_METER;
 
     private static final double TIME_STEP = 5.0;
-    private static final double COORDINATE_NOISE = 3.0 * METER_TO_DEG;
+    //private static final double COORDINATE_NOISE = 3.0 * METER_TO_DEG;
+    private static final double COORDINATE_NOISE = 3.0;
     private static final double ALTITUDE_NOISE = 10.0;
     
     private Kalman2D mLatitudeTracker, mLongitudeTracker;
@@ -33,29 +34,31 @@ public class KalmanManagerC {
 
         // Latitude
         position = location.getLatitude();
-        noise = accuracy * METER_TO_DEG;
+        //noise = accuracy * METER_TO_DEG;
+        noise = accuracy;
         
         if (mLatitudeTracker == null) {
 
         	//mLatitudeTracker = new Tracker1D(TIME_STEP, COORDINATE_NOISE);
-        	mLatitudeTracker = new Kalman2D(position, location.getSpeed(), 5, COORDINATE_NOISE);
+        	mLatitudeTracker = new Kalman2D(position, 0.0, 5, COORDINATE_NOISE);
             //mLatitudeTracker.setState(position, location.getSpeed(), noise);
         }else{
         //mLatitudeTracker.predict(0.0);
-        mLatitudeTracker.Update(position, location.getSpeed(), noise);
+        mLatitudeTracker.Update(position, 0.0, noise);
         }
 
         // Longitude
         position = location.getLongitude();
-        noise = accuracy * Math.cos(Math.toRadians(location.getLatitude())) * METER_TO_DEG ;
+        //noise = accuracy * Math.cos(Math.toRadians(location.getLatitude())) * METER_TO_DEG ;
+        noise = accuracy;
 
         if (mLongitudeTracker == null) {
 
-            mLongitudeTracker = new Kalman2D(position, location.getSpeed(), 5, COORDINATE_NOISE);
+            mLongitudeTracker = new Kalman2D(position, 0.0, 5, COORDINATE_NOISE);
             //mLongitudeTracker.setState(position, location.getSpeed(), noise);
         }else{
         //mLongitudeTracker.predict(0.0);
-        mLongitudeTracker.Update(position, location.getSpeed(), noise);
+        mLongitudeTracker.Update(position,0.0, noise);
         }       
         
     }

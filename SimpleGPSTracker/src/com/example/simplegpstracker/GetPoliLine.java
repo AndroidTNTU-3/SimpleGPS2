@@ -60,6 +60,7 @@ public class GetPoliLine {
 				Log.d("Exception while reading url", e.toString());
 			} finally {
 				try {
+					if(iStream != null)
 					iStream.close();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block

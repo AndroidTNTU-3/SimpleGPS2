@@ -10,6 +10,7 @@ import com.example.simplegpstracker.PointAdapter.PointAdapterCallBack;
 import com.example.simplegpstracker.db.GPSInfoHelper;
 import com.example.simplegpstracker.db.KalmanInfoHelper;
 import com.example.simplegpstracker.db.KalmanInfoHelperT;
+import com.example.simplegpstracker.db.ProcessedInfoHelper;
 import com.example.simplegpstracker.entity.GPSInfo;
 import com.example.simplegpstracker.kalman.KalmanManager;
 import com.example.simplegpstracker.utils.UtilsNet;
@@ -67,7 +68,9 @@ public class ViewMapActivity1 extends FragmentActivity implements PointAdapterCa
 	private GPSInfoHelper helper;
 	private KalmanInfoHelper kalmanHelper;
 	private KalmanInfoHelperT kalmanHelperT;
+	private ProcessedInfoHelper processedHelper;
 	private List<GPSInfo> list;
+	
 	/////TEST BLOCK
 	private List<GPSInfo> list1;
 	private ArrayList<LatLng> points1 = null;
@@ -82,6 +85,7 @@ public class ViewMapActivity1 extends FragmentActivity implements PointAdapterCa
 	
 	private LatLng destPoint;
 	GPSInfo infoMarker;
+	GPSInfo infoProcessed;
 	
 	//info from sensors
 	private double accelerate;
@@ -271,14 +275,21 @@ public class ViewMapActivity1 extends FragmentActivity implements PointAdapterCa
 	
 	private boolean getDataDB() {
 		helper = new GPSInfoHelper(context);
+		
 		kalmanHelper = new KalmanInfoHelper(context);
+		
 		kalmanHelperT = new KalmanInfoHelperT(context);
+		
+		processedHelper = new ProcessedInfoHelper(context);
+		processedHelper.cleanOldRecords();
+		infoProcessed = new GPSInfo();
+		
         list = new ArrayList<GPSInfo>();
         if(kalmanFilter.equals("on"))list = kalmanHelper.getGPSPoint();
         else list = helper.getGPSPoint();
         
-        //to start compute we must have 2 points
-        if(list.size() < 2){
+        //to start compute we must have 2 points or a database must not be empty
+        if(list == null && list.size() < 2){
 			Toast toast = Toast.makeText(context, context.getResources().getString(R.string.message_base_empty), Toast.LENGTH_SHORT); 
 			toast.show();
 			helper.closeDB();
@@ -374,6 +385,19 @@ public class ViewMapActivity1 extends FragmentActivity implements PointAdapterCa
         	if(list.size() != 0){
         	pointAdapter.startCompute(list);}
         	break;
+        case R.id.action_show_processed:
+        	
+        	//map.clear();
+        	//list = processedHelper.getGPSPoint();
+        	//new ToBearProcess(list, context);
+        	//if(list.size() != 0) pointAdapter.startCompute(list);
+        	ToKalman toKalman1 = new ToKalman(processedHelper.getGPSPoint(), context);
+        	toKalman1.compute();
+        	map.clear();
+        	list = kalmanHelperT.getGPSPoint();
+        	if(list.size() != 0){
+        	pointAdapter.startCompute(list);}
+        	break;
         default: return super.onOptionsItemSelected(item);
         }
 		return true;
@@ -382,6 +406,7 @@ public class ViewMapActivity1 extends FragmentActivity implements PointAdapterCa
 	//4. Get computed points and send to draw on map
 	@Override
 	public void drawPoli(ArrayList<LatLng> points) {
+		
 		/*newPoints = new ArrayList<LatLng>();
 		for(LatLng p: points){
 			newPoints.add(p);	
@@ -391,8 +416,12 @@ public class ViewMapActivity1 extends FragmentActivity implements PointAdapterCa
 		/*for(LatLng p: points){
 			allPoints.add(p);	
 		}*/
+		
 		for(int i = 1; i < points.size(); i++){
 			allPoints.add(points.get(i));
+			infoProcessed.setLatitude(points.get(i).latitude);
+			infoProcessed.setLongitude(points.get(i).longitude);						
+			processedHelper.insert(infoProcessed);
 		}
 		//newPoints = points;
 		newLatLng = new LatLng(points.get(0).latitude, points.get(0).longitude);
@@ -408,6 +437,6 @@ public class ViewMapActivity1 extends FragmentActivity implements PointAdapterCa
 		else if(viewRouteParameter.equals("realPoint"))addMarkers(realPoints); 
 		else map.addPolyline(polyLineOptions);
 	}
-
+	
 
 }
