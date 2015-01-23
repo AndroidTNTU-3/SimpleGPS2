@@ -154,14 +154,11 @@ public class Kalman2D
 		m_x.Data[1] = velosity;
 				
 		f = new MatrixC(2, 2);
-		data = new double[] { 1, dt, 0, 1 };
-		f.MatrixSetData(data);
+		f.MatrixSetData(new double[] { 1, dt, 0, 1 });
 		h = new MatrixC(2, 2);
-		data = new double[] { 1, 0, 0, 1 };
-		h.MatrixSetData(data);
+		h.MatrixSetData(new double[] { 1, 0, 0, 1 });
 		ht = new MatrixC(2, 2);
-		data = new double[] { 1, 0, 0, 1 };
-		ht.MatrixSetData(data);
+		ht.MatrixSetData(new double[] { 1, 0, 0, 1 });
 		// U = {0,0}		
 		
 	}
@@ -251,8 +248,7 @@ public class Kalman2D
 
 		// Y = M – H*X  
 		MatrixC y = new MatrixC(1, 2);
-		data = new double[] { mx - m_x.Data[0], mv - m_x.Data[1] };
-		y.MatrixSetData(data);
+		y.MatrixSetData(new double[] { mx - m_x.Data[0], mv - m_x.Data[1] });
 
 		// S = H*P*H^T + R 
 		MatrixC s = MatrixC.MultiplyABAT(h, m_p);
@@ -277,8 +273,7 @@ public class Kalman2D
 		// P = (I – K * H) * P
 		MatrixC kh = MatrixC.Multiply(k, h);
 		MatrixC id = new MatrixC(2, 2);
-		data = new double[] { 1, 0, 0, 1 };
-		id.setData(data);
+		id.setData(new double[] { 1, 0, 0, 1 });
 		kh.Multiply(-1);
 		id.Add(kh);
 		id.Multiply(m_p);

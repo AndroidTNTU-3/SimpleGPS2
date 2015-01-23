@@ -16,11 +16,13 @@
     <string name="b_map">Map</string>
     <string name="b_send">Send</string>
     <string name="b_set">Set</string>
+    <string name="satellite">Satellite</string>
     <string name="message_base_empty">Base of point is empty</string>
     <string name="action_refresh">Refresh</string>
     <string name="action_kalman_t">KalmanManager</string>
     <string name="action_kalman_g">KalmanGeo</string>
     <string name="action_kalman_c">KalmanC</string>
+    
     <string name="action_show_markers">Markers</string>
     <string name="action_show_lines">Lines</string>
     <string name="action_show_processed">Processed</string>

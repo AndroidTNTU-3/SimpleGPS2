@@ -101,7 +101,7 @@
 	                android:text="" />
 	        </TableRow>
 
-	        <TableRow
+	       <TableRow
 	            android:id="@+id/tableRow3"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content" >
@@ -122,9 +122,25 @@
 	                android:text="" />
 	            
 	        </TableRow>
-	        
+	     </TableLayout>   
+
+
+
+	           <LinearLayout
+	               android:id="@+id/rect_gray1"
+	               android:layout_width="match_parent"
+	               android:layout_height="1dp"
+	               android:background="@drawable/rect_gray"	             
+	               android:layout_margin="3dp"
+	               android:orientation="vertical" >
+	           </LinearLayout>
+
+	   	  <TableLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content" >  
+	           
 	        <TableRow
-	            android:id="@+id/tableRow4"
+	            android:id="@+id/tableRow5"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content" >
 	            
@@ -146,7 +162,7 @@
 	        </TableRow>
 	        
 	        	<TableRow
-	            android:id="@+id/tableRow5"
+	            android:id="@+id/tableRow6"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content" >
 	            
@@ -167,8 +183,23 @@
 	            
 	        </TableRow>
 	        
+	       </TableLayout>
+
+	           <LinearLayout
+	               android:id="@+id/rect_gray2"
+	               android:layout_width="match_parent"
+	               android:layout_height="1dp"
+	               android:background="@drawable/rect_gray"	             
+	               android:layout_margin="3dp"
+	               android:orientation="vertical" >
+	           </LinearLayout>	       
+	       
+	       <TableLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content" >  
+	        
 	        <TableRow
-	            android:id="@+id/tableRow6"
+	            android:id="@+id/tableRow8"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content" >
 	            
@@ -177,7 +208,7 @@
 		       android:layout_width="wrap_content"
 		       android:layout_height="wrap_content"
 		       android:layout_margin="3dp"
-		       android:text="Satellite" />
+		       android:text="@string/satellite" />
 
 	         <TextView
 	             android:id="@+id/tvSatelliteCount"
@@ -191,8 +222,6 @@
 
 
 	    </TableLayout>
-
-
 
 	 </LinearLayout> 
 

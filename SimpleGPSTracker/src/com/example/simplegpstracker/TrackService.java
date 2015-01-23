@@ -149,13 +149,12 @@ public class TrackService extends Service {
 	            		if ((location != null)){
 	            			//if(location.getAccuracy() < 5){
 	            			 
-		            			if(kalmanFilter.equals("on")){
+		            			/*if(kalmanFilter.equals("on")){
 			            			km.setParam(location);
 			                		km.getKalmanLocation();
 			                		Location kalmanLocation = new Location(KalmanManager.KALMAN_PROVIDER);
 			                		kalmanLocation = km.getKalmanLocation();
-			                		/*location.setLatitude(kalmanLocation.getLatitude());
-			                		location.setLongitude(kalmanLocation.getLongitude());*/
+	
 			                		kalmanInfo.setId(1);
 			                		kalmanInfo.setLongitude(kalmanLocation.getLongitude());
 			                		kalmanInfo.setLatitude(kalmanLocation.getLatitude());
@@ -164,7 +163,7 @@ public class TrackService extends Service {
 			                		kalmanInfo.setTitle("Track1");
 			                		kalmanInfo.setTime(System.currentTimeMillis());
 			                		kalmanHelper.insert(kalmanInfo);
-		            			}
+		            			}*/
 	            			
 		            		info.setId(1);
 		            		info.setLongitude(location.getLongitude());

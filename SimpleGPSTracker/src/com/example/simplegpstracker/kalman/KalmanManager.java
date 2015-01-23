@@ -1,5 +1,7 @@
 package com.example.simplegpstracker.kalman;
 
+import com.example.simplegpstracker.entity.GPSInfo;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -8,7 +10,7 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-public class KalmanManager {
+public class KalmanManager implements KManager{
 	
     /**
      * Provider string assigned to predicted Location objects.
@@ -40,7 +42,7 @@ public class KalmanManager {
 		this.context = context;
 	}
 	
-	public void setParam(Location location){
+	public void setParam(Location location, GPSInfo info){
 		preferences = PreferenceManager.getDefaultSharedPreferences(context);
 		//how to show the route on a map
 		timeStepShared = (double)Integer.parseInt(preferences.getString("refreshTime", "5"));
@@ -60,10 +62,11 @@ public class KalmanManager {
         	//mLatitudeTracker = new Tracker1D(TIME_STEP, COORDINATE_NOISE);
         	mLatitudeTracker = new Tracker1D(timeStepShared, COORDINATE_NOISE);
             mLatitudeTracker.setState(position, 0.0, noise);
-        }else{
-        mLatitudeTracker.predict(0.0);
-        mLatitudeTracker.update(position, noise);
         }
+        //else{
+        mLatitudeTracker.predict(info.getAcceleration());
+        mLatitudeTracker.update(position, noise);
+        //}
 
         // Longitude
         position = location.getLongitude();
@@ -73,10 +76,11 @@ public class KalmanManager {
 
             mLongitudeTracker = new Tracker1D(timeStepShared, COORDINATE_NOISE);
             mLongitudeTracker.setState(position, 0.0, noise);
-        }else{
-        mLongitudeTracker.predict(0.0);
-        mLongitudeTracker.update(position, noise);
         }
+        //else{
+        mLongitudeTracker.predict(info.getAcceleration());
+        mLongitudeTracker.update(position, noise);
+        //}
         
         // Update last location
         if (mLastLocation == null ) {

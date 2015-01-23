@@ -12,7 +12,10 @@ import com.example.simplegpstracker.db.KalmanInfoHelper;
 import com.example.simplegpstracker.db.KalmanInfoHelperT;
 import com.example.simplegpstracker.db.ProcessedInfoHelper;
 import com.example.simplegpstracker.entity.GPSInfo;
+import com.example.simplegpstracker.factory.FactoryBuilder;
+import com.example.simplegpstracker.factory.FactoryKalmanBuilder;
 import com.example.simplegpstracker.kalman.KalmanManager;
+import com.example.simplegpstracker.utils.UtilsGeometry;
 import com.example.simplegpstracker.utils.UtilsNet;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -62,6 +65,8 @@ public class ViewMapActivity1 extends FragmentActivity implements PointAdapterCa
 	PointAdapter pointAdapter;
 	KalmanManager km;
 	private String kalmanFilter;
+	
+	FactoryKalmanBuilder fBuilder;
  
 	private SupportMapFragment mapFragment;
 	private GoogleMap map;
@@ -353,49 +358,60 @@ public class ViewMapActivity1 extends FragmentActivity implements PointAdapterCa
         	map.clear();
         	viewRouteParameter = "marker";
         	list = helper.getGPSPoint();
+        	processedHelper.cleanOldRecords();
         	pointAdapter.startCompute(list);
         	break;
         case R.id.action_show_lines:
         	map.clear();
         	viewRouteParameter = "line";
         	list = helper.getGPSPoint();
+        	processedHelper.cleanOldRecords();
         	pointAdapter.startCompute(list);
         	break;
         case R.id.action_show_kalman_t:
-        	ToKalman toKalman = new ToKalman(helper.getGPSPoint(), context);
-        	toKalman.compute();
+        	/*ToKalman toKalman = new ToKalman(helper.getGPSPoint(), context);
+        	toKalman.compute();*/
+        	fBuilder = FactoryBuilder.getFactory(FactoryBuilder.KALMAN_VILLOREN, context);
+        	fBuilder.init(helper.getGPSPoint(), context);
+        	fBuilder.compute();
         	map.clear();
         	list = kalmanHelperT.getGPSPoint();
         	if(list.size() != 0){
         	pointAdapter.startCompute(list);}
         	break;
         case R.id.action_show_kalman_g:
-        	ToKalmanGeoTrack toKalmanGeo = new ToKalmanGeoTrack(helper.getGPSPoint(), context);
-        	toKalmanGeo.compute();
+        	//ToKalmanGeoTrack toKalmanGeo = new ToKalmanGeoTrack(helper.getGPSPoint(), context);
+        	//toKalmanGeo.compute();
+        	fBuilder = FactoryBuilder.getFactory(FactoryBuilder.KALMAN_GEOTRACK, context);
+        	fBuilder.init(helper.getGPSPoint(), context);
+        	fBuilder.compute();
         	map.clear();
         	list = kalmanHelperT.getGPSPoint();
         	if(list.size() != 0){
+        	processedHelper.cleanOldRecords();
         	pointAdapter.startCompute(list);}
         	break;
         case R.id.action_show_kalman_c:
-        	ToKalmanC toKalmanC = new ToKalmanC(helper.getGPSPoint(), context);
-        	toKalmanC.compute();
+        	//ToKalmanC toKalmanC = new ToKalmanC(helper.getGPSPoint(), context);
+        	//toKalmanC.compute();
+        	fBuilder = FactoryBuilder.getFactory(FactoryBuilder.KALMAN_PORT_C, context);
+        	fBuilder.init(helper.getGPSPoint(), context);
+        	fBuilder.compute();
         	map.clear();
         	list = kalmanHelperT.getGPSPoint();
         	if(list.size() != 0){
+        	processedHelper.cleanOldRecords();
         	pointAdapter.startCompute(list);}
         	break;
         case R.id.action_show_processed:
         	
-        	//map.clear();
-        	//list = processedHelper.getGPSPoint();
-        	//new ToBearProcess(list, context);
-        	//if(list.size() != 0) pointAdapter.startCompute(list);
-        	ToKalman toKalman1 = new ToKalman(processedHelper.getGPSPoint(), context);
-        	toKalman1.compute();
+        	fBuilder = FactoryBuilder.getFactory(FactoryBuilder.KALMAN_VILLOREN, context);
+        	fBuilder.init(processedHelper.getGPSPoint(), context);
+        	fBuilder.compute();
         	map.clear();
         	list = kalmanHelperT.getGPSPoint();
         	if(list.size() != 0){
+        	processedHelper.cleanOldRecords();
         	pointAdapter.startCompute(list);}
         	break;
         default: return super.onOptionsItemSelected(item);
@@ -419,8 +435,10 @@ public class ViewMapActivity1 extends FragmentActivity implements PointAdapterCa
 		
 		for(int i = 1; i < points.size(); i++){
 			allPoints.add(points.get(i));
+			
 			infoProcessed.setLatitude(points.get(i).latitude);
-			infoProcessed.setLongitude(points.get(i).longitude);						
+			infoProcessed.setLongitude(points.get(i).longitude);
+			infoProcessed.setBearing(UtilsGeometry.getBearing(new LatLng(points.get(i).latitude, points.get(i).longitude)));
 			processedHelper.insert(infoProcessed);
 		}
 		//newPoints = points;

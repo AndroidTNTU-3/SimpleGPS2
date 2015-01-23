@@ -15,6 +15,7 @@
     <string name="b_stop">Стоп</string>
      <string name="b_map">Мапа</string>
      <string name="b_send">Відправити</string>
+     <string name="satellite">Супутники</string>
      <string name="message_base_empty">Немає данних місцеположення</string>
      
     <string name="action_show_markers">Маркер</string>
@@ -22,7 +23,7 @@
      
      <string name="dialog_warning_title">Попередження</string>
     
-    <string name="providers">Providers</string>
+    <string name="providers">Провайдери</string>
     <string name="providers_key">providers</string>
     <string name="providers_title">Провайдери</string>
     <string name="summary_providers">Вибір провайдера розташування</string>
@@ -46,7 +47,7 @@
     
     <string name="status_enabled">Увімкнено</string>
     <string name="status_disabled">Вимкнено</string>
-        <string name="gps">GPS</string>
+    <string name="gps">GPS</string>
     <string name="network">Мережа</string>
     
     <string name="accelerate">Прискорення</string>

@@ -53,23 +53,6 @@ public class PointAdapter implements PoliLoaderCallBack{
 		travelMode = preferences.getString("travelMode", "walking");
 		kalmanFilter = preferences.getString("kalman", "off");
 	}
-	/*
-	private boolean getDataDB() {
-		helper = new GPSInfoHelper(context);
-		kalmanHelper = new KalmanInfoHelper(context);
-        list = new ArrayList<GPSInfo>();
-        if(kalmanFilter.equals("on"))list = kalmanHelper.getGPSPoint();
-        else list = helper.getGPSPoint();
-        
-        //to start compute we must have 2 points
-        if(list.size() < 2){
-			Toast toast = Toast.makeText(context, context.getResources().getString(R.string.message_base_empty), Toast.LENGTH_SHORT); 
-			toast.show();
-			helper.closeDB();
-			return false;
-        }
-		return true;
-	}*/
 	
 	public void startCompute(List<GPSInfo> list){
 		this.list = list;
@@ -156,22 +139,23 @@ public class PointAdapter implements PoliLoaderCallBack{
 		for (int i = 0; i < routes.size(); i++) {
 
 			List<HashMap<String, String>> path = routes.get(i);
-			
+			Log.d("DEBUG:", "path: " + i + "-----------------------");
 			for (int j = 0; j < path.size(); j++) {
 
 				HashMap<String, String> point = path.get(j);
-
+				
 				double lat = Double.parseDouble(point.get("lat"));
 				double lng = Double.parseDouble(point.get("lng"));
 				
 				/*
 				 * remove duplicated points,
-				 * since polylines decoded as <latLng1, latLng2>, <latLng2, latLng3>, <latLng3, latLng4>...
+				 * since polylines data is decoded as <latLng1, latLng2>, <latLng2, latLng3>, <latLng3, latLng4>...
 				 */
 
 				if((templat != lat) | (templng != lng)){
 					LatLng position = new LatLng(lat, lng);
 					points.add(position);
+					Log.d("DEBUG:", "lat: " + lat + " lng: " + lng);
 				}
 
 				templat = lat;
