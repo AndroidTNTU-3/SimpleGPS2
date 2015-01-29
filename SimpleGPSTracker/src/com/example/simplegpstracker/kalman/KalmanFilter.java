@@ -9,65 +9,65 @@ public class KalmanFilter {
 
 	/* This group of matrices must be specified by the user. */
 	/* F_k */
-	Matrix state_transition;
+	MatrixOne state_transition;
 	/* H_k */
-	Matrix observation_model;
+	MatrixOne observation_model;
 	/* Q_k */
-	Matrix process_noise_covariance;
+	MatrixOne process_noise_covariance;
 	/* R_k */
-	Matrix observation_noise_covariance;
+	MatrixOne observation_noise_covariance;
 
 	/* The observation is modified by the user before every time step. */
 	/* z_k */
-	Matrix observation;
+	MatrixOne observation;
 
 	/* This group of matrices are updated every time step by the filter. */
 	/* x-hat_k|k-1 */
-	Matrix predicted_state;
+	MatrixOne predicted_state;
 	/* P_k|k-1 */
-	Matrix predicted_estimate_covariance;
+	MatrixOne predicted_estimate_covariance;
 	/* y-tilde_k */
-	Matrix innovation;
+	MatrixOne innovation;
 	/* S_k */
-	Matrix innovation_covariance;
+	MatrixOne innovation_covariance;
 	/* S_k^-1 */
-	Matrix inverse_innovation_covariance;
+	MatrixOne inverse_innovation_covariance;
 	/* K_k */
-	Matrix optimal_gain;
+	MatrixOne optimal_gain;
 	/* x-hat_k|k */
-	Matrix state_estimate;
+	MatrixOne state_estimate;
 	/* P_k|k */
-	Matrix estimate_covariance;
+	MatrixOne estimate_covariance;
 
 	/* This group is used for meaningless intermediate calculations */
-	Matrix vertical_scratch;
-	Matrix small_square_scratch;
-	Matrix big_square_scratch;
+	MatrixOne vertical_scratch;
+	MatrixOne small_square_scratch;
+	MatrixOne big_square_scratch;
 
 	public KalmanFilter(int state_dimension, int observation_dimension) {
 		timestep = 0;
 		this.state_dimension = state_dimension;
 		this.observation_dimension = observation_dimension;
 
-		state_transition = new Matrix(state_dimension, state_dimension);
-		observation_model = new Matrix(observation_dimension, state_dimension);
-		process_noise_covariance = new Matrix(state_dimension, state_dimension);
-		observation_noise_covariance = new Matrix(observation_dimension, observation_dimension);
+		state_transition = new MatrixOne(state_dimension, state_dimension);
+		observation_model = new MatrixOne(observation_dimension, state_dimension);
+		process_noise_covariance = new MatrixOne(state_dimension, state_dimension);
+		observation_noise_covariance = new MatrixOne(observation_dimension, observation_dimension);
 
-		observation = new Matrix(observation_dimension, 1);
+		observation = new MatrixOne(observation_dimension, 1);
 
-		predicted_state = new Matrix(state_dimension, 1);
-		predicted_estimate_covariance = new Matrix(state_dimension,	state_dimension);
-		innovation = new Matrix(observation_dimension, 1);
-		innovation_covariance = new Matrix(observation_dimension, observation_dimension);
-		inverse_innovation_covariance = new Matrix(observation_dimension, observation_dimension);
-		optimal_gain = new Matrix(state_dimension, observation_dimension);
-		state_estimate = new Matrix(state_dimension, 1);
-		estimate_covariance = new Matrix(state_dimension, state_dimension);
+		predicted_state = new MatrixOne(state_dimension, 1);
+		predicted_estimate_covariance = new MatrixOne(state_dimension,	state_dimension);
+		innovation = new MatrixOne(observation_dimension, 1);
+		innovation_covariance = new MatrixOne(observation_dimension, observation_dimension);
+		inverse_innovation_covariance = new MatrixOne(observation_dimension, observation_dimension);
+		optimal_gain = new MatrixOne(state_dimension, observation_dimension);
+		state_estimate = new MatrixOne(state_dimension, 1);
+		estimate_covariance = new MatrixOne(state_dimension, state_dimension);
 
-		vertical_scratch = new Matrix(state_dimension, observation_dimension);
-		small_square_scratch = new Matrix(observation_dimension,observation_dimension);
-		big_square_scratch = new Matrix(state_dimension, state_dimension);
+		vertical_scratch = new MatrixOne(state_dimension, observation_dimension);
+		small_square_scratch = new MatrixOne(observation_dimension,observation_dimension);
+		big_square_scratch = new MatrixOne(state_dimension, state_dimension);
 	}
 
 	/*
@@ -93,44 +93,44 @@ public class KalmanFilter {
 		timestep++;
 
 		/* Predict the state */
-		Matrix.multiply_matrix(state_transition, state_estimate, predicted_state);
+		MatrixOne.multiply_matrix(state_transition, state_estimate, predicted_state);
 
 		/* Predict the state estimate covariance */
-		Matrix.multiply_matrix(state_transition, estimate_covariance, big_square_scratch);
-		Matrix.multiply_by_transpose_matrix(big_square_scratch, state_transition, predicted_estimate_covariance);
-		Matrix.add_matrix(predicted_estimate_covariance, process_noise_covariance, predicted_estimate_covariance);
+		MatrixOne.multiply_matrix(state_transition, estimate_covariance, big_square_scratch);
+		MatrixOne.multiply_by_transpose_matrix(big_square_scratch, state_transition, predicted_estimate_covariance);
+		MatrixOne.add_matrix(predicted_estimate_covariance, process_noise_covariance, predicted_estimate_covariance);
 	}
 
 	/* Just the estimation phase of update. */
 	void estimate() {
 		/* Calculate innovation */
-		Matrix.multiply_matrix(observation_model, predicted_state, innovation);
-		Matrix.subtract_matrix(observation, innovation, innovation);
+		MatrixOne.multiply_matrix(observation_model, predicted_state, innovation);
+		MatrixOne.subtract_matrix(observation, innovation, innovation);
 
 		/* Calculate innovation covariance */
-		Matrix.multiply_by_transpose_matrix(predicted_estimate_covariance, observation_model, vertical_scratch);
-		Matrix.multiply_matrix(observation_model, vertical_scratch, innovation_covariance);
-		Matrix.add_matrix(innovation_covariance, observation_noise_covariance, innovation_covariance);
+		MatrixOne.multiply_by_transpose_matrix(predicted_estimate_covariance, observation_model, vertical_scratch);
+		MatrixOne.multiply_matrix(observation_model, vertical_scratch, innovation_covariance);
+		MatrixOne.add_matrix(innovation_covariance, observation_noise_covariance, innovation_covariance);
 
 		/*
 		 * Invert the innovation covariance. Note: this destroys the innovation
 		 * covariance. TODO: handle inversion failure intelligently.
 		 */
-		Matrix.destructive_invert_matrix(innovation_covariance, inverse_innovation_covariance);
+		MatrixOne.destructive_invert_matrix(innovation_covariance, inverse_innovation_covariance);
 
 		/*
 		 * Calculate the optimal Kalman gain. Note we still have a useful
 		 * partial product in vertical scratch from the innovation covariance.
 		 */
-		Matrix.multiply_matrix(vertical_scratch, inverse_innovation_covariance, optimal_gain);
+		MatrixOne.multiply_matrix(vertical_scratch, inverse_innovation_covariance, optimal_gain);
 
 		/* Estimate the state */
-		Matrix.multiply_matrix(optimal_gain, innovation, state_estimate);
-		Matrix.add_matrix(state_estimate, predicted_state, state_estimate);
+		MatrixOne.multiply_matrix(optimal_gain, innovation, state_estimate);
+		MatrixOne.add_matrix(state_estimate, predicted_state, state_estimate);
 
 		/* Estimate the state covariance */
-		Matrix.multiply_matrix(optimal_gain, observation_model, big_square_scratch);
-		Matrix.subtract_from_identity_matrix(big_square_scratch);
-		Matrix.multiply_matrix(big_square_scratch, predicted_estimate_covariance, estimate_covariance);
+		MatrixOne.multiply_matrix(optimal_gain, observation_model, big_square_scratch);
+		MatrixOne.subtract_from_identity_matrix(big_square_scratch);
+		MatrixOne.multiply_matrix(big_square_scratch, predicted_estimate_covariance, estimate_covariance);
 	}
 }

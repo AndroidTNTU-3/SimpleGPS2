@@ -56,6 +56,8 @@
     <string name="orientation_x">Положення X</string>
     <string name="orientation_y">Положення Y</string>
     <string name="orientation_z">Положення Z</string>
+    
+    <string name="loading">Завантаження..</string>
 
     <string-array name="location_provider">
         <item>GPS</item>

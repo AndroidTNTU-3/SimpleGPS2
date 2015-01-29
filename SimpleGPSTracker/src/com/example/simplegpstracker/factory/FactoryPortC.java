@@ -22,7 +22,7 @@ public class FactoryPortC extends FactoryKalmanBuilder{
 		for(GPSInfo info: list){
 			//if(info.getAccuracy() < 5){
 				Log.i("DEBUG", "accuracy:" + info.getAccuracy());
-				fromKalmanManager(info);							
+				 fromKalmanManager(info);
 			//}
 		}				
 	}

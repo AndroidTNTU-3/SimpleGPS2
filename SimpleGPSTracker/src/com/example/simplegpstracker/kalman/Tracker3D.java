@@ -14,7 +14,8 @@ public class Tracker3D {
 	double dt;
 	double measurementNoise;
 	double accelNoise;
-	KalmanFilter filter;
+	
+	org.apache.commons.math3.filter.KalmanFilter filter;
 	
 	RealMatrix A;
 	RealMatrix B;
@@ -69,10 +70,10 @@ public class Tracker3D {
 	
 		// constant control input, increase velocity by 0.1 m/s per cycle
 		//u = new ArrayRealVector(new double[] { 0.1d });
-		u = new ArrayRealVector(new double[] {0.0});
+		//u = new ArrayRealVector(new double[] {0.1d});
 		ProcessModel pm = new DefaultProcessModel(A, B, Q, x, P0);
 		MeasurementModel mm = new DefaultMeasurementModel(H, R);
-		filter = new KalmanFilter(pm, mm);
+		filter = new org.apache.commons.math3.filter.KalmanFilter(pm, mm);
 	
 		//RandomGenerator rand = new JDKRandomGenerator();
 	
@@ -80,20 +81,20 @@ public class Tracker3D {
 		mNoise = new ArrayRealVector(1);
 	}
 	
-	public void Update(double newPosition, double processNoise, double newVelocity){
+	public void Update(double newPosition, double newVelocity, double processNoise){
 		
-		u = new ArrayRealVector(new double[] {0.0});
-		filter.predict(u);
+		//u = new ArrayRealVector(new double[] {0.1d});
+		filter.predict();
 		
 	    position = filter.getStateEstimation()[0];
 	    velocity = filter.getStateEstimation()[1];
 	    System.out.println("P : "+position+" : "+velocity);
 	    //x = new ArrayRealVector(new double[] { newPosition, newVelocity});
 	    // simulate the process
-	    pNoise = tmpPNoise.mapMultiply(accelNoise * accelNoise);
+	    pNoise = tmpPNoise.mapMultiply(processNoise * processNoise);
 
 	    // x = A * x + B * u + pNoise
-	    x = A.operate(x).add(B.operate(u)).add(pNoise);
+	    x = A.operate(x).add(pNoise);
 
 	    // simulate the measurement
 	    mNoise.setEntry(0, measurementNoise * measurementNoise);

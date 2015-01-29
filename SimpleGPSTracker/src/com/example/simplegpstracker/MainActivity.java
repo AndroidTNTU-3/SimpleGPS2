@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.os.Build;
@@ -59,6 +60,8 @@ public class MainActivity extends Activity {
 	TextView tvNetworkStatus;
 	TextView tvSatelliteCount;
 	
+	LinearLayout progressLayout;
+	
 	LocationManager locationManager;
 
 	Context context;
@@ -84,6 +87,10 @@ public class MainActivity extends Activity {
         tvGPSStatus = (TextView) findViewById(R.id.tvGPSValue);
         tvNetworkStatus = (TextView) findViewById(R.id.tvNetworkValue);
         tvSatelliteCount = (TextView) findViewById(R.id.tvSatelliteCount);
+        progressLayout = (LinearLayout) findViewById(R.id.progressLayoutMain);
+        
+        if(UtilsNet.IsServiceRunning(context)) progressLayout.setVisibility(View.VISIBLE);
+        else progressLayout.setVisibility(View.INVISIBLE);
         
     	locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);   	
         
@@ -205,10 +212,13 @@ public class MainActivity extends Activity {
 				startService(iStartService);
 				Toast toast_start = Toast.makeText(context, context.getResources().getString(R.string.service_start), Toast.LENGTH_SHORT); 
 				toast_start.show(); 
+				if(isGPSEnabled | isNetworkEnabled)
+				progressLayout.setVisibility(View.VISIBLE);
 				break;
 			case R.id.bStopService:
 				Intent iStopService = new Intent(context, TrackService.class);
 				stopService(iStopService);
+				progressLayout.setVisibility(View.INVISIBLE);
 				break;
 			case R.id.bViewMap:
 				if(!UtilsNet.isOnline(getApplicationContext())){
@@ -218,7 +228,7 @@ public class MainActivity extends Activity {
 					Toast toast = Toast.makeText(context, context.getResources().getString(R.string.service_started), Toast.LENGTH_SHORT); 
 					toast.show();
 				}else{
-					Intent iMap = new Intent(context, ViewMapActivity1.class);
+					Intent iMap = new Intent(context, ViewMapActivity.class);
 					startActivity(iMap);
 				}
 				break;

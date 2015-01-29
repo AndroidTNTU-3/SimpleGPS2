@@ -1,6 +1,7 @@
-﻿package com.example.simplegpstracker.kalman;
+package com.example.simplegpstracker.kalman;
 
 import android.util.Log;
+import Jama.Matrix;
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -16,7 +17,7 @@ import android.util.Log;
 /** 
  Kalman 2D.
 */
-public class Kalman2D
+public class Kalman2D3
 {
 	public double[] data;
 	public double LastGain;
@@ -24,18 +25,18 @@ public class Kalman2D
 	/** 
 	 State.
 	*/
-
-	MatrixC m_x = new MatrixC(1, 2);
+	Matrix m_x;
+	//MatrixC m_x = new MatrixC(1, 2);
 	/** 
 	 Covariance.
 	*/
 
-	MatrixC m_p = new MatrixC(2, 2);
+	Matrix m_p;
 	/** 
 	 Minimal covariance.
 	*/
 
-	MatrixC m_q = new MatrixC(2, 2);
+	Matrix m_q;
 
 	/** 
 	 Minimal innovative covariance, keeps filter from locking in to a solution.
@@ -43,11 +44,11 @@ public class Kalman2D
 
 	double m_r;
 	
-	MatrixC f;
-	MatrixC h;
-	MatrixC ht;
+	Matrix f;
+	Matrix h;
+	Matrix ht;
 	
-	MatrixC temp;
+	Matrix temp;
 
 	/** 
 	 The last updated value, can also be set if filter gets
@@ -55,11 +56,11 @@ public class Kalman2D
 	*/
 	public final double getValue()
 	{
-		return m_x.Data[0];
+		return m_x.get(0, 0);
 	}
 	public final void setValue(double value)
 	{
-		m_x.Data[0] = value;
+		m_x.set(0, 0, value);
 	}
 
 	/** 
@@ -67,7 +68,7 @@ public class Kalman2D
 	*/
 	public final double getVelocity()
 	{
-		return m_x.Data[1];
+		return m_x.get(1, 0);
 	}
 
 	/** 
@@ -90,7 +91,7 @@ public class Kalman2D
 	*/
 	public final double Variance()
 	{
-		return m_p.Data[0];
+		return m_p.get(0,0);
 	}
 
 	/** 
@@ -102,7 +103,7 @@ public class Kalman2D
 	*/
 	public final double Predicition(double dt)
 	{
-		return m_x.Data[0] + (dt * m_x.Data[1]);
+		return m_x.get(0,0) + (dt * m_x.get(1,0));
 	}
 
 	/** 
@@ -115,7 +116,7 @@ public class Kalman2D
 	*/
 	public final double Variance(double dt)
 	{
-		return m_p.Data[0] + dt*(m_p.Data[2] + m_p.Data[1]) + dt*dt*m_p.Data[3] + m_q.Data[0];
+		return m_p.get(0,0) + dt*(m_p.get(1,0) + m_p.get(0,1)) + dt*dt*m_p.get(1,1) + m_q.get(0,0);
 		// Not needed.
 		// m_p[1] = m_p[1] + dt * m_p[3] + m_q[1];
 		// m_p[2] = m_p[2] + dt * m_p[3] + m_q[2];
@@ -131,85 +132,38 @@ public class Kalman2D
 	 @param pd Initial variance.
 	 @param ix Initial position.
 	*/
-	public Kalman2D(double position, double velosity, double dt, double processNoise){
+	public Kalman2D3(double position, double velosity, double dt, double processNoise){
 		this.position = position;
 		this.dt = dt;
 		this.processNoise = processNoise;
 		
-		temp = new MatrixC(2,2);
-		temp.Data[0] = Math.pow(dt, 4d) / 4d;
-		temp.Data[1] = Math.pow(dt, 3d) / 2d;
-		temp.Data[2] = Math.pow(dt, 3d) / 2d;
-		temp.Data[3] = Math.pow(dt, 2d);
+		temp = new Matrix(new double[][]{ {Math.pow(dt, 4d)/4d, Math.pow(dt, 3d)/2d}, 
+										  {Math.pow(dt, 3d)/2d, Math.pow(dt, 2d)} });
 
-		m_q = MatrixC.Multiply(temp, processNoise*processNoise);
-		
+		m_q = temp.times(processNoise*processNoise);
+
+
 		//Set P
 		/*data = new double[] { 1, 1, 1, 1 };
 		m_p.setData(data);*/
-		m_p.Data[0] = m_p.Data[3] = 3;
-        m_p.Data[1] = m_p.Data[2] = 0;		
+		m_p = new Matrix(new double[][] { {1, 0}, 
+										  {0, 1}});
+        
+        m_x = new Matrix(new double[][]{{position}, {velosity}});
 				
-		m_x.Data[0] = position;
-		m_x.Data[1] = velosity;
-				
-		f = new MatrixC(2, 2);
-		f.MatrixSetData(new double[] { 1, dt, 0, 1 });
-		h = new MatrixC(2, 2);
-		h.MatrixSetData(new double[] { 1, 0, 0, 1 });
-		ht = new MatrixC(2, 2);
-		ht.MatrixSetData(new double[] { 1, 0, 0, 1 });
+		f = new Matrix(new double[][] { {1, dt}, 
+										{0, 1 }});
+
+		h = new Matrix(new double[][] { {1, 0},
+										{0, 1} });
+
+		ht = new Matrix(new double[][] { {1, 0}, 
+										 {0, 1} });
+
 		// U = {0,0}		
 		
 	}
 	
-	public final void SetMatrix(double position, double velosity, double dt, double processNoise)
-	{
-		/*m_q.Data[0] = qx * qx;
-		m_q.Data[1] = qv * qx;
-		m_q.Data[2] = qv * qx;
-		m_q.Data[3] = qv * qv;*/
-		
-		//Set Q
-		temp = new MatrixC(2,2);
-		temp.Data[0] = Math.pow(dt, 4d) / 4d;
-		temp.Data[1] = Math.pow(dt, 3d) / 2d;
-		temp.Data[2] = Math.pow(dt, 3d) / 2d;
-		temp.Data[3] = Math.pow(dt, 2d);
-
-		m_q.Multiply(temp, processNoise*processNoise);
-		
-		m_r = processNoise*processNoise;
-
-		/*m_p.Data[0] = m_p.Data[3] = pd;
-		m_p.Data[0] = m_p.Data[3];
-		m_p.Data[1] = m_p.Data[2] = 0;
-		m_p.Data[1] = m_p.Data[2];*/
-		
-		//Set P
-		
-		data = new double[] { 1, 1, 1, 1 };
-		m_p.setData(data);
-		
-		
-		m_x.Data[0] = position;
-		m_x.Data[1] = velosity;
-		
-		f = new MatrixC(2, 2);
-		data = new double[] { 1, dt, 0, 1 };
-		f.MatrixSetData(data);
-		h = new MatrixC(2, 2);
-		data = new double[] { 1, 0, 0, 1 };
-		h.MatrixSetData(data);
-		ht = new MatrixC(2, 2);
-		data = new double[] { 1, 0, 0, 1 };
-		ht.MatrixSetData(data);
-		// U = {0,0}
-	}
-	
-	public void setState(){
-		
-	}
 	
 
 	/** 
@@ -238,55 +192,48 @@ public class Kalman2D
 		
 		// X = F*X + H*U
 		m_r = noise*noise;
-		Log.i("DEBUG", "m_x_pered:" + m_x.Data[0]);
-		m_x = MatrixC.Multiply(f, m_x);
-
+		Log.i("DEBUG", "mx:" + mx);
+		m_x = f.times(m_x);
+		Log.i("DEBUG", "m_x_predicted:" + m_x.get(0, 0));
 		// P = F*P*F^T + Q
-		m_p = MatrixC.MultiplyABAT(f, m_p);
-		m_p.Add(m_q);
+		m_p = f.times(m_p).times(f.transpose()).plus(m_q);
 
 		// Y = M – H*X  
-		MatrixC y = new MatrixC(1, 2);
-		y.MatrixSetData(new double[] { mx - m_x.Data[0], mv - m_x.Data[1] });
-
+		Matrix z = new Matrix(new double[][]{{mx}, {mv}});
+		//Matrix y = new Matrix(new double[][] { {mx - m_x.get(0,0), mv - m_x.get(0,1) }});
+		Matrix y = z.minus(h.times(m_x));
 		// S = H*P*H^T + R 
-		MatrixC s = MatrixC.MultiplyABAT(h, m_p);
-		/*s.Data[0] += m_r;
-		s.Data[3] += m_r*0.1;*/
-		s.Data[0] += m_r;
-		s.Data[3] += 0.1;
+		 Matrix r = new Matrix(new double[][] { {m_r,0},{0,m_r*0.1} });
 
+		Matrix s = h.times(m_p.times(h.transpose())).plus(r);
+		//Matrix s = h.times(m_p.times(h.transpose()));
+		Matrix sinv = s.inverse();
 		// K = P * H^T *S^-1 
-		MatrixC tmp = MatrixC.Multiply(m_p, ht);
-		MatrixC sinv = MatrixC.Invert(s);
-		MatrixC k = new MatrixC(2, 2);
 
-		if (sinv != null)
-		{
-			k = MatrixC.Multiply(tmp, sinv);
+		Matrix k = new Matrix(2, 2);
+		try{
+		  k = (m_p.times(h.transpose())).times(sinv);	
+		}catch (RuntimeException e){
+			
 		}
 
-		LastGain = k.Determinant();
 
 		// X = X + K*Y
-		m_x.Add(MatrixC.Multiply(k, y));
+		m_x = m_x.plus(k.times(y));
 
-		// P = (I – K * H) * P
-		MatrixC kh = MatrixC.Multiply(k, h);
-		MatrixC id = new MatrixC(2, 2);
-		id.setData(new double[] { 1, 0, 0, 1 });
-		kh.Multiply(-1);
-		id.Add(kh);
-		id.Multiply(m_p);
-		m_p.Set(id);
+		// P = (I - K * H) * P
+		Matrix i = new Matrix(new double[][] { {1, 0}, {0, 1} });
+		m_p = m_p.times(i.minus(k.times(h)));
+		
 
 
 		// Return latest estimate.
-		Log.i("DEBUG", "m_x:" + m_x.Data[0]);
-		return m_x.Data[0];
+		Log.i("DEBUG", "m_x:" + m_x.get(0,0));
+		return m_x.get(0,0);
 	}
 	
-	public double getPosition() { return m_x.Data[0]; }
+	public double getPosition() { return m_x.get(0,0); }
+
 
 
 }

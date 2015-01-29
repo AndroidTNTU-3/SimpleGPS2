@@ -6,9 +6,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
-public class KalmanManagerC implements KManager{
+public class KalmanManagerTracker3D implements KManager{
 	
 	private Context context;
 	private Location location;
@@ -23,14 +22,15 @@ public class KalmanManagerC implements KManager{
 
     private static final double TIME_STEP = 5.0;
     private static final double COORDINATE_NOISE = 3.0 * METER_TO_DEG;
+    //private static final double COORDINATE_NOISE = 3.0;
     private static final double ALTITUDE_NOISE = 10.0;
     
-    private Kalman2D3 mLatitudeTracker, mLongitudeTracker;
+    private Tracker3D mLatitudeTracker, mLongitudeTracker;
     
 	private double timeStepShared;
 	private SharedPreferences preferences;
     
-    public KalmanManagerC(Context context){
+    public KalmanManagerTracker3D(Context context){
 		this.context = context;
 	}
     
@@ -41,8 +41,6 @@ public class KalmanManagerC implements KManager{
 		
     	this.location = location;
         final double accuracy = location.getAccuracy();
-        double velocity = location.getSpeed()* METER_TO_DEG;
-        //double velocity = 0.0;
         double position, noise;
 
         // Latitude
@@ -53,12 +51,13 @@ public class KalmanManagerC implements KManager{
         if (mLatitudeTracker == null) {
 
         	//mLatitudeTracker = new Tracker1D(TIME_STEP, COORDINATE_NOISE);
-        	mLatitudeTracker = new Kalman2D3(position, velocity, timeStepShared, COORDINATE_NOISE);
+        	mLatitudeTracker = new Tracker3D(timeStepShared, COORDINATE_NOISE);
+        	mLatitudeTracker.setState(position, location.getSpeed());
             //mLatitudeTracker.setState(position, location.getSpeed(), noise);
         }
         else{
         //mLatitudeTracker.predict(0.0);
-        mLatitudeTracker.Update(position, velocity, noise);
+        mLatitudeTracker.Update(position, location.getSpeed(), noise);
         }
 
         // Longitude
@@ -68,12 +67,13 @@ public class KalmanManagerC implements KManager{
 
         if (mLongitudeTracker == null) {
 
-            mLongitudeTracker = new Kalman2D3(position, velocity, timeStepShared, COORDINATE_NOISE);
+            mLongitudeTracker = new Tracker3D(timeStepShared, COORDINATE_NOISE);
+            mLatitudeTracker.setState(position, location.getSpeed());
             //mLongitudeTracker.setState(position, location.getSpeed(), noise);
         }
         else{
         //mLongitudeTracker.predict(0.0);
-        mLongitudeTracker.Update(position, velocity, noise);
+        mLongitudeTracker.Update(position, location.getSpeed(), noise);
         }       
         
     }
@@ -88,10 +88,6 @@ public class KalmanManagerC implements KManager{
         // Longitude
         //mLongitudeTracker.predict(0.0);
         location.setLongitude(mLongitudeTracker.getPosition());
-        location.setSpeed((float) (mLongitudeTracker.getVelocity()*DEG_TO_METER));
-        Log.i("DEBUG:", "speed:" + String.valueOf(mLongitudeTracker.getVelocity()*DEG_TO_METER));
         return location;
-
-        
     }
 }

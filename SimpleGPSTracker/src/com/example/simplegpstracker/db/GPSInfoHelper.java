@@ -9,6 +9,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class GPSInfoHelper {
 	
@@ -49,7 +50,6 @@ public class GPSInfoHelper {
 		Cursor cursor = db.rawQuery(sql, null);
 		
 		if (cursor.getCount() != 0) {
-
 			list = new ArrayList<GPSInfo>();
 			cursor.moveToFirst();
 			do {

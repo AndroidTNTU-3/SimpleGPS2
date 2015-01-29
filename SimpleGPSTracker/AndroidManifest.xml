@@ -54,7 +54,7 @@
         </activity>
         
         <activity
-            android:name=".ViewMapActivity1"
+            android:name=".ViewMapActivity"
             android:label="@string/title_activity_view_map" >
         </activity>
 

@@ -27,9 +27,12 @@ public class PointAdapter implements PoliLoaderCallBack{
 	private KalmanInfoHelper kalmanHelper;
 	private List<GPSInfo> list;
 	PointAdapterCallBack pointAdapterCallBack;
+	int partListCount = 0;
+	int iter = 0;
 	
 	public static interface PointAdapterCallBack{
 		public void drawPoli(ArrayList<LatLng> points);
+		public void isLoadFinished();
 	}
 	
 	PointAdapter(Context context){
@@ -68,7 +71,10 @@ public class PointAdapter implements PoliLoaderCallBack{
 	            }
 	            
 	            //get computed point from the google server	if point`s count more then 2 
-	            if(list8.size() > 2) getTrack(list8);
+	            if(list8.size() > 2) {
+	            	getTrack(list8);
+	            	partListCount++;
+	            }
 	        }
 			
 	}
@@ -165,6 +171,8 @@ public class PointAdapter implements PoliLoaderCallBack{
 				
 		}
 		pointAdapterCallBack.drawPoli(points);
+		iter++;
+		if(iter == partListCount) pointAdapterCallBack.isLoadFinished();
 	}
 	
 	//registering callback

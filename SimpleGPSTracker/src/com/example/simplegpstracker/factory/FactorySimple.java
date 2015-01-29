@@ -1,21 +1,17 @@
 package com.example.simplegpstracker.factory;
 
-import java.util.List;
 
-import android.content.Context;
+
 import android.location.Location;
-import android.location.LocationManager;
 import android.util.Log;
 
-import com.example.simplegpstracker.db.KalmanInfoHelperT;
+
 import com.example.simplegpstracker.entity.GPSInfo;
 import com.example.simplegpstracker.kalman.KManager;
-import com.example.simplegpstracker.kalman.KalmanGeoTracker;
-import com.example.simplegpstracker.kalman.KalmanFilter1;
+
 import com.example.simplegpstracker.kalman.KalmanManager;
-import com.example.simplegpstracker.kalman.KalmanManagerC;
-import com.example.simplegpstracker.kalman.KalmanMen;
-import com.example.simplegpstracker.kalman.Tracker3D;
+
+
 
 public class FactorySimple extends FactoryKalmanBuilder {
 	
@@ -41,7 +37,7 @@ public class FactorySimple extends FactoryKalmanBuilder {
 		location.setLatitude(info.getLatitude());
 		location.setLongitude(info.getLongitude());
 		location.setAccuracy(info.getAccuracy());
-		location.setSpeed(info.getSpeed());
+		location.setSpeed(location.getSpeed());
 		km.setParam(location, info);
  		kalmanLocation = km.getKalmanLocation();
  		

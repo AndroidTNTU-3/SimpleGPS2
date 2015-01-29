@@ -221,8 +221,33 @@
 	        </TableRow>
 
 
-	    </TableLayout>
+	    </TableLayout> 
+	 
 
-	 </LinearLayout> 
+</LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/progressLayoutMain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:alpha="30"
+        android:background="@drawable/rect_gray"
+        android:gravity="bottom"
+        android:orientation="horizontal" >
+
+        <ProgressBar
+            android:id="@+id/progressBar1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/textViewTest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="2dp"
+            android:text="@string/loading" />
+    </LinearLayout>
 
 </FrameLayout>

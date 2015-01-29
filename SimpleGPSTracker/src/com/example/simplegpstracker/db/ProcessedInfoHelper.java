@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.simplegpstracker.entity.GPSInfo;
+import com.google.android.gms.maps.model.LatLng;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -102,6 +103,24 @@ public class ProcessedInfoHelper {
 		
 		if (cursor != null) cursor.close();
 		return gpsInfo;
+    }
+    
+    public ArrayList<LatLng> getLatLngPoint() {
+    	ArrayList<LatLng> points = new ArrayList<LatLng>();
+    	
+    	String sql = "SELECT * FROM " + DbHelper.TRACKER_PROCESSED_DB_TABLE;
+    	Cursor cursor = db.rawQuery(sql, null);
+
+		if (cursor.getCount() != 0) {
+
+			cursor.moveToFirst();
+			do {
+				points.add(new LatLng(cursor.getDouble(cursor.getColumnIndex(DbHelper.TRACKER_DB_LATITUDE)),
+									  cursor.getDouble(cursor.getColumnIndex(DbHelper.TRACKER_DB_LONGITUDE))));
+			} while(cursor.moveToNext());
+		}
+		if (cursor != null) cursor.close();
+    	return points;
     }
 
 	public void cleanOldRecords() {
