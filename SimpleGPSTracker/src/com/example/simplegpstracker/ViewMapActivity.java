@@ -149,7 +149,6 @@ public class ViewMapActivity extends FragmentActivity implements PointAdapterCal
 		if(getDataDB() == false) {
 			Toast toast = Toast.makeText(context, context.getResources().getString(R.string.message_base_empty), Toast.LENGTH_SHORT); 
 			toast.show();
-			helper.closeDB();
 			activity.finish();
 			return;
 		}
@@ -482,7 +481,6 @@ public class ViewMapActivity extends FragmentActivity implements PointAdapterCal
     public void onDestroy(){
         super.onDestroy();
         helper.closeDB();
-        kalmanHelper.closeDB();
     }
 	
 	

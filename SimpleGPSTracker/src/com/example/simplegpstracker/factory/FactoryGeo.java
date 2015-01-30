@@ -24,7 +24,7 @@ public class FactoryGeo extends FactoryKalmanBuilder{
 				Log.i("DEBUG", "accuracy:" + info.getAccuracy());
 				fromGeoTrack(info);					
 			//}
-		}				
+		}
 	}
 	
 	private void fromGeoTrack(GPSInfo info){

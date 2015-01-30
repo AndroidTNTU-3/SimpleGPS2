@@ -57,8 +57,37 @@ public class DbHelper extends SQLiteOpenHelper {
             + TRACKER_DB_GYR_Y + " FLOAT," +  TRACKER_DB_GYR_Z + " FLOAT," + TRACKER_DB_ACCEL + " DOUBLE," + TRACKER_DB_SPEED + " FLOAT,"
             + TRACKER_DB_BEARING + " DOUBLE," + TRACKER_DB_TITLE + " TEXT," + TRACKER_DB_TIME + " LONG);";
     
+	
+	private static DbHelper mInstance = null;
+    private static SQLiteDatabase myWritableDb;
+    
+    public static DbHelper getInstance(Context ctx) {
 
-	public DbHelper(Context context) {
+        // Use the application context, which will ensure that you
+        // don't accidentally leak an Activity's context.
+        // See this article for more information: http://bit.ly/6LRzfx
+        if (mInstance == null) {
+            mInstance = new DbHelper(ctx.getApplicationContext());
+        }
+        return mInstance;
+    }
+    
+    /**
+     * Returns a writable database instance in order not to open and close many
+     * SQLiteDatabase objects simultaneously
+     *
+     * @return a writable instance to SQLiteDatabase
+     */
+    
+    public SQLiteDatabase getMyWritableDatabase() {
+        if ((myWritableDb == null) || (!myWritableDb.isOpen())) {
+            myWritableDb = this.getWritableDatabase();
+        }
+ 
+        return myWritableDb;
+    }
+    
+    private DbHelper(Context context) {
 		super(context, DbHelper.DATABASE_NAME, null, DbHelper.DATABASE_VERSION);
 		// TODO Auto-generated constructor stub
 	}

@@ -8,15 +8,14 @@ import com.example.simplegpstracker.entity.GPSInfo;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
-public class KalmanInfoHelperT {
+public class KalmanInfoHelperT extends BaseDao{
 	
-	private SQLiteDatabase db;
+	//private SQLiteDatabase db;
 	
 	public KalmanInfoHelperT(Context context) {
-        DbHelper openHelper = new DbHelper(context);
-        db = openHelper.getWritableDatabase();
+		super(context);
+		openDb();
 	}
 	
     public long insert(GPSInfo gpsInfo) {   

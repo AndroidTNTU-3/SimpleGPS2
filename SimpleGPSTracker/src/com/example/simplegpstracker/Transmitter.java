@@ -60,6 +60,7 @@ public class Transmitter {
 		GPSInfoHelper helper = new GPSInfoHelper(context);
 	    List<GPSInfo> list = new ArrayList<GPSInfo>();
 	    list = helper.getGPSPoint();
+	    helper.closeDB();
 	    json = new Gson().toJson(list);
 	    return json;
 	}

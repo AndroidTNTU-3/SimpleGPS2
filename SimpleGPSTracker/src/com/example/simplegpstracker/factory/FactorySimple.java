@@ -28,7 +28,7 @@ public class FactorySimple extends FactoryKalmanBuilder {
 				Log.i("DEBUG", "accuracy:" + info.getAccuracy());
 				fromKalmanManager(info);							
 			//}
-		}				
+		}	
 	}
 		
 	private void fromKalmanManager(GPSInfo info) {

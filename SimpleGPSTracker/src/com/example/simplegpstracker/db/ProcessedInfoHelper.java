@@ -9,15 +9,14 @@ import com.google.android.gms.maps.model.LatLng;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
-public class ProcessedInfoHelper {
+public class ProcessedInfoHelper extends BaseDao{
 	
-	private SQLiteDatabase db;
+	//private SQLiteDatabase db;
 	
 	public ProcessedInfoHelper(Context context) {
-        DbHelper openHelper = new DbHelper(context);
-        db = openHelper.getWritableDatabase();
+		super(context);
+		openDb();
 	}
 	
     public long insert(GPSInfo gpsInfo) {   
