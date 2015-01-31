@@ -5,6 +5,12 @@ import java.util.Date;
 import com.example.simplegpstracker.preference.PrefActivity;
 import com.example.simplegpstracker.preference.PreferenceActivityP;
 import com.example.simplegpstracker.utils.UtilsNet;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.app.Activity;
 import android.app.ActionBar;
@@ -18,6 +24,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,7 +40,7 @@ import android.widget.Toast;
 import android.os.Build;
 import android.preference.PreferenceManager;
 
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity {
 	
 	static final public String SATELLITE_COUNT= "com.example.simplegpstracker.satellitecount";
 	//preferences
@@ -42,6 +49,11 @@ public class MainActivity extends Activity {
 	private String travelMode;
 	private int refreshTime;
 	private String status;
+	
+	private GoogleMap map;
+	private SupportMapFragment mapFragment;
+	private LocationLoader locationLoader;
+	private Location location;
 	
 	private boolean isGPSEnabled;
 	private boolean isNetworkEnabled;
@@ -92,7 +104,12 @@ public class MainActivity extends Activity {
         if(UtilsNet.IsServiceRunning(context)) progressLayout.setVisibility(View.VISIBLE);
         else progressLayout.setVisibility(View.INVISIBLE);
         
-    	locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);   	
+    	locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);   
+    	
+		mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapMain);
+		map = mapFragment.getMap();
+		
+		setMapView();
         
     	//This receiver receive provider status for update MainActivity info 
     	receiverProvider = new BroadcastReceiver()
@@ -120,6 +137,20 @@ public class MainActivity extends Activity {
         };
         context.registerReceiver(receiverProvider, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
         context.registerReceiver(reciverSatellite, new IntentFilter(SATELLITE_COUNT));
+    }
+    
+    private void setMapView(){
+    	locationLoader = new LocationLoader(context);
+    	getStatus();
+    	if(isNetworkEnabled && isNetworkEnabled){
+    		location = locationLoader.getLocation();
+    		if(location != null)
+    			 map.setIndoorEnabled(true);
+            map.setMyLocationEnabled(true);
+    			map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()),15));
+    		 map.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).icon(
+    			        BitmapDescriptorFactory.defaultMarker()));
+    	}
     }
 
 

@@ -65,11 +65,16 @@ public class LocationLoader implements LocationListener, UnregisterCallBack{
 
 	    // Flag for network status
 	    boolean isNetworkEnabled = false;
+	    
+	public LocationLoader(Context context){ 
+	 this(context, null);
+	}
 	  	
 	public LocationLoader(Context context, TrackService service){
 		this.context = context;
 		this.service = service;
-		service.setCallBack(this);
+		if(service != null) service.setCallBack(this);
+		
 		//get a selected provider 
 		preferences = PreferenceManager.getDefaultSharedPreferences(context);
 		providers = preferences.getString("providers", "Network");
