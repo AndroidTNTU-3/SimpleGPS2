@@ -145,7 +145,7 @@ public class TrackService extends Service {
             		//Get count of satellite
             		
        			 	if(isProviderReady()){
-       			 		
+            		
 	            		if ((location != null)){
 	            			//if(location.getAccuracy() < 5){
 	            			 
@@ -175,6 +175,10 @@ public class TrackService extends Service {
 		            		info.setTime(System.currentTimeMillis());
 		            		
 		            		helper.insert(info);
+		            		
+		            		count = locationLoader.getSatelliteCount();
+		            		
+		        		 	sendResult(count, location.getLatitude(), location.getLongitude());
 		            		Log.i("DEBUG", "Inserted");
 	            			}
 	            		}
@@ -196,20 +200,21 @@ public class TrackService extends Service {
         	if(providers.equals("Network") && locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) return true;
         	else if(providers.equals("GPS") && locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
         		count = locationLoader.getSatelliteCount();
-    		 	sendResult(count);
     			Log.d("DEBUG", "satellite in serv" + count);
     			if (count > 3) return true;
         	}
         	return false;
         }
         
-        public void sendResult(int message) {
+        public void sendResult(int message, double lat, double lng) {
             /*Intent intent = new Intent(MainActivity.SATELLITE_COUNT);
             //if(message != 0)
                 intent.putExtra("count", message);
             broadcastSatelliteCount.sendBroadcast(intent);*/
         	Intent local = new Intent();
         	local.putExtra("count", message);
+        	local.putExtra("lat", lat);
+        	local.putExtra("lng", lng);
         	local.setAction(MainActivity.SATELLITE_COUNT);
 
         	sendBroadcast(local);

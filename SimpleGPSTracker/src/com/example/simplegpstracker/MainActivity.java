@@ -1,7 +1,11 @@
 package com.example.simplegpstracker;
 
 import java.util.Date;
+import java.util.List;
 
+import com.example.simplegpstracker.db.GPSInfoHelper;
+import com.example.simplegpstracker.db.KalmanInfoHelperT;
+import com.example.simplegpstracker.entity.GPSInfo;
 import com.example.simplegpstracker.preference.PrefActivity;
 import com.example.simplegpstracker.preference.PreferenceActivityP;
 import com.example.simplegpstracker.utils.UtilsNet;
@@ -11,6 +15,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import android.app.Activity;
 import android.app.ActionBar;
@@ -34,6 +39,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,11 +65,21 @@ public class MainActivity extends FragmentActivity {
 	private boolean isNetworkEnabled;
 	
 	private BroadcastReceiver receiverProvider, reciverSatellite ;
+	
+	private LatLng startPoint, endPoint;
+	private PolylineOptions polylineOptions;
 
 	Button bViewMap;
 	Button bStartService;
 	Button bStopService;
 	Button bSendService;
+	
+	Button bReal;
+	Button bKalman;
+	
+	ImageView ivMap;
+	ImageView ivStartStop;
+	ImageView ivSend;
 	
 	TextView tvProviders;
 	TextView tvTravelMode;
@@ -81,33 +97,41 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_test_map);
         
         context = getApplicationContext();     
-        bViewMap = (Button)findViewById(R.id.bViewMap);
+        /*bViewMap = (Button)findViewById(R.id.bViewMap);
         bViewMap.setOnClickListener(new ClickListener());
         bStartService = (Button)findViewById(R.id.bStartService);
         bStartService.setOnClickListener(new ClickListener());
         bStopService = (Button)findViewById(R.id.bStopService);
         bStopService.setOnClickListener(new ClickListener());
         bSendService = (Button)findViewById(R.id.bSendServer);
-        bSendService.setOnClickListener(new ClickListener());
+        bSendService.setOnClickListener(new ClickListener());*/
         
-        tvProviders = (TextView) findViewById(R.id.tvProvidersValue);
+        ivMap = (ImageView) findViewById(R.id.ivMap);
+        ivMap.setOnClickListener(new ClickListener());
+        ivStartStop = (ImageView) findViewById(R.id.ivRecord);
+        ivStartStop.setOnClickListener(new ClickListener());
+        ivSend = (ImageView) findViewById(R.id.ivSend);
+        ivSend.setOnClickListener(new ClickListener());
+        
+        /*tvProviders = (TextView) findViewById(R.id.tvProvidersValue);
         tvTravelMode = (TextView) findViewById(R.id.tvTravelModeValue);
         tvRefreshTime = (TextView) findViewById(R.id.tvRefreshTimeValue);
         tvGPSStatus = (TextView) findViewById(R.id.tvGPSValue);
-        tvNetworkStatus = (TextView) findViewById(R.id.tvNetworkValue);
+        tvNetworkStatus = (TextView) findViewById(R.id.tvNetworkValue);*/
         tvSatelliteCount = (TextView) findViewById(R.id.tvSatelliteCount);
-        progressLayout = (LinearLayout) findViewById(R.id.progressLayoutMain);
+       // progressLayout = (LinearLayout) findViewById(R.id.progressLayoutMain);
         
-        if(UtilsNet.IsServiceRunning(context)) progressLayout.setVisibility(View.VISIBLE);
-        else progressLayout.setVisibility(View.INVISIBLE);
+       /* if(UtilsNet.IsServiceRunning(context)) progressLayout.setVisibility(View.VISIBLE);
+        else progressLayout.setVisibility(View.INVISIBLE);*/
         
     	locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);   
     	
-		mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapMain);
+		mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment);
 		map = mapFragment.getMap();
+		startPoint = null;
 		
 		setMapView();
         
@@ -120,8 +144,8 @@ public class MainActivity extends FragmentActivity {
             //Get status provider  
         	getStatus();
             //Update views on MainActivity
-        	setStatusGPS();
-            setStatusNetwork();
+        	//setStatusGPS();
+            //setStatusNetwork();
           }
         };
             
@@ -132,6 +156,10 @@ public class MainActivity extends FragmentActivity {
           public void onReceive( Context context, Intent intent )
           {
               int satelliteCount = intent.getIntExtra("count", 0);
+              LatLng point = new LatLng(intent.getDoubleExtra("lat", 0.0),
+            		  					intent.getDoubleExtra("lng", 0.0));
+              drawPoly(point, Color.RED);
+              Log.i("DEBUG:", "point" + "lat: " + point.latitude + "lon:" + point.longitude);
               tvSatelliteCount.setText(String.valueOf(satelliteCount));
           }
         };
@@ -142,15 +170,29 @@ public class MainActivity extends FragmentActivity {
     private void setMapView(){
     	locationLoader = new LocationLoader(context);
     	getStatus();
-    	if(isNetworkEnabled && isNetworkEnabled){
-    		location = locationLoader.getLocation();
-    		if(location != null)
-    			 map.setIndoorEnabled(true);
-            map.setMyLocationEnabled(true);
-    			map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()),15));
-    		 map.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).icon(
-    			        BitmapDescriptorFactory.defaultMarker()));
+    	if(isGPSEnabled | isNetworkEnabled){
+    		//location = locationLoader.getLocation();
+    		if(location != null){
+    			map.setIndoorEnabled(true);
+    			map.setMyLocationEnabled(true);
+    			
+    		 //map.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).icon(
+    			       // BitmapDescriptorFactory.defaultMarker()));
+    		}
     	}
+    }
+    
+    private void drawPoly(LatLng point, int color){
+   		endPoint = point;
+   		Log.i("DEBUG:", "point" + "lat: " + point.latitude + "lon:" + point.longitude);
+    	if(startPoint != null){
+    		map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(point.latitude, point.longitude),15));
+    		polylineOptions = new PolylineOptions().width(3).color(color);
+    		polylineOptions.add(startPoint, endPoint);
+        	map.addPolyline(polylineOptions);
+    	}
+    	startPoint = endPoint;
+
     }
 
 
@@ -198,24 +240,24 @@ public class MainActivity extends FragmentActivity {
     
     private void setStatusGPS(){
     	if(isGPSEnabled) {
-        	tvGPSStatus.setText(getResources().getString(R.string.status_enabled));
-        	tvGPSStatus.setTextColor(Color.GREEN);
+        	//tvGPSStatus.setText(getResources().getString(R.string.status_enabled));
+        	//tvGPSStatus.setTextColor(Color.GREEN);
         }
         else if(!isGPSEnabled) {
-        	tvGPSStatus.setText(getResources().getString(R.string.status_disabled));
-        	tvGPSStatus.setTextColor(Color.BLACK);
+        	//tvGPSStatus.setText(getResources().getString(R.string.status_disabled));
+        	//tvGPSStatus.setTextColor(Color.BLACK);
         }
         
     }
     
     private void setStatusNetwork(){   	
         if(isNetworkEnabled) {
-        	tvNetworkStatus.setText(getResources().getString(R.string.status_enabled));
-        	tvNetworkStatus.setTextColor(Color.GREEN);
+        	//tvNetworkStatus.setText(getResources().getString(R.string.status_enabled));
+        	//tvNetworkStatus.setTextColor(Color.GREEN);
         }
         else if(!isNetworkEnabled) {
-        	tvNetworkStatus.setText(getResources().getString(R.string.status_disabled));
-        	tvNetworkStatus.setTextColor(Color.BLACK);
+        	//tvNetworkStatus.setText(getResources().getString(R.string.status_disabled));
+        	//tvNetworkStatus.setTextColor(Color.BLACK);
         }
     }
     
@@ -224,12 +266,12 @@ public class MainActivity extends FragmentActivity {
         getPreferences();
         getStatus();
         
-        tvProviders.setText(provider);
-        tvTravelMode.setText(travelMode);
-        tvRefreshTime.setText(String.valueOf(refreshTime));
+        //tvProviders.setText(provider);
+        //tvTravelMode.setText(travelMode);
+        //tvRefreshTime.setText(String.valueOf(refreshTime));
         
-        setStatusGPS();
-        setStatusNetwork();
+        //setStatusGPS();
+       // setStatusNetwork();
     }
 
     private class ClickListener implements OnClickListener{
@@ -238,7 +280,7 @@ public class MainActivity extends FragmentActivity {
 		public void onClick(View view) {
 			int id = view.getId();
 			switch (id) {
-			case R.id.bStartService:
+			/*case R.id.bStartService:
 				Intent iStartService = new Intent(context, TrackService.class);
 				startService(iStartService);
 				Toast toast_start = Toast.makeText(context, context.getResources().getString(R.string.service_start), Toast.LENGTH_SHORT); 
@@ -264,8 +306,40 @@ public class MainActivity extends FragmentActivity {
 				}
 				break;
 			case R.id.bSendServer:
-				new Transmitter(context).send();
+				//new Transmitter(context).send();
+				Intent tMap = new Intent(context, TestMap.class);
+				startActivity(tMap);
+				break;*/
+			case R.id.ivRecord:
+				if(!UtilsNet.IsServiceRunning(context)){
+					ivStartStop.setImageResource(R.drawable.stop_selector);
+					Intent iStartService = new Intent(context, TrackService.class);
+					startService(iStartService);
+					Toast toast_start = Toast.makeText(context, context.getResources().getString(R.string.service_start), Toast.LENGTH_SHORT); 
+					toast_start.show(); 
+				}else if(UtilsNet.IsServiceRunning(context)){
+					ivStartStop.setImageResource(R.drawable.record_selector);
+					Intent iStopService = new Intent(context, TrackService.class);
+					stopService(iStopService);
+				}
 				break;
+			case R.id.ivMap:
+				if(!UtilsNet.isOnline(getApplicationContext())){
+					Toast toast = Toast.makeText(context, context.getResources().getString(R.string.network_off), Toast.LENGTH_SHORT); 
+					toast.show();				
+				}else if(UtilsNet.IsServiceRunning(context)){
+					Toast toast = Toast.makeText(context, context.getResources().getString(R.string.service_started), Toast.LENGTH_SHORT); 
+					toast.show();
+				}else{
+					Intent iMap = new Intent(context, ViewMapActivity.class);
+					startActivity(iMap);
+				}
+				break;
+			case R.id.bSendServer:
+				new Transmitter(context).send();				
+				break;
+
+				
 			default:
 				break;
 			}
@@ -273,6 +347,14 @@ public class MainActivity extends FragmentActivity {
 		}
     	
     }   
+    
+    private void routeLooper(List<GPSInfo> list, int color){
+    	LatLng point = null;
+    	for(GPSInfo info: list){
+    		point = new LatLng(info.getLatitude(), info.getLongitude());
+    		drawPoly(point, color);
+    	}
+    }
     
     @Override
     protected void onStop() {

@@ -276,6 +276,7 @@ public class LocationLoader implements LocationListener, UnregisterCallBack{
 	public void Unregister() {	
 		
 		locationManager.removeUpdates(this);
+		//locationManager.removeGpsStatusListener(gpsStatusListener);
 	}
 	
 }
