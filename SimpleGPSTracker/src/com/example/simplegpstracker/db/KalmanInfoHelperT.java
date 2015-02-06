@@ -35,7 +35,7 @@ public class KalmanInfoHelperT extends BaseDao{
         values.put(DbHelper.TRACKER_DB_GYR_X, gpsInfo.getGyroscopex());
         values.put(DbHelper.TRACKER_DB_GYR_Y, gpsInfo.getGyroscopey());
         values.put(DbHelper.TRACKER_DB_GYR_Z, gpsInfo.getGyroscopez());
-        values.put(DbHelper.TRACKER_DB_TITLE, gpsInfo.getTitle());
+        values.put(DbHelper.TRACKER_DB_NAME, gpsInfo.getName());
         values.put(DbHelper.TRACKER_DB_TIME, gpsInfo.getTime());
         return values;
     }
@@ -63,7 +63,7 @@ public class KalmanInfoHelperT extends BaseDao{
 				gpsInfo.setGyroscopex(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_GYR_X)));
 				gpsInfo.setGyroscopey(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_GYR_Y)));
 				gpsInfo.setGyroscopez(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_GYR_Z)));
-				gpsInfo.setTitle(cursor.getString(cursor.getColumnIndex(DbHelper.TRACKER_DB_TITLE)));
+				gpsInfo.setName(cursor.getString(cursor.getColumnIndex(DbHelper.TRACKER_DB_NAME)));
 				gpsInfo.setTime(cursor.getLong(cursor.getColumnIndex(DbHelper.TRACKER_DB_TIME)));
 				list.add(gpsInfo);
 			} while(cursor.moveToNext());	
@@ -94,7 +94,7 @@ public class KalmanInfoHelperT extends BaseDao{
 				gpsInfo.setGyroscopex(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_GYR_X)));
 				gpsInfo.setGyroscopey(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_GYR_Y)));
 				gpsInfo.setGyroscopez(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_GYR_Z)));
-				gpsInfo.setTitle(cursor.getString(cursor.getColumnIndex(DbHelper.TRACKER_DB_TITLE)));
+				gpsInfo.setName(cursor.getString(cursor.getColumnIndex(DbHelper.TRACKER_DB_NAME)));
 				gpsInfo.setTime(cursor.getLong(cursor.getColumnIndex(DbHelper.TRACKER_DB_TIME)));
 			} while(cursor.moveToNext());
 		}

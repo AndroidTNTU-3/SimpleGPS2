@@ -1,12 +1,12 @@
 package com.example.simplegpstracker.entity;
 
-public class GPSInfo {
+public class GPSInfo{
 	
 	private int Id;
 	private Double latitude;
 	private Double longitude;
 	private float accuracy;
-	private String title;
+	private String name;
 	private long time;
 	private double acceleration;
 	private float speed;
@@ -75,11 +75,11 @@ public class GPSInfo {
 	public void setAccuracy(float accuracy) {
 		this.accuracy = accuracy;
 	}
-	public String getTitle() {
-		return title;
+	public String getName() {
+		return name;
 	}
-	public void setTitle(String title) {
-		this.title = title;
+	public void setName(String name) {
+		this.name = name;
 	}
 	public long getTime() {
 		return time;

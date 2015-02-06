@@ -35,7 +35,7 @@ public class GPSInfoHelper extends BaseDao{
         values.put(DbHelper.TRACKER_DB_GYR_X, gpsInfo.getGyroscopex());
         values.put(DbHelper.TRACKER_DB_GYR_Y, gpsInfo.getGyroscopey());
         values.put(DbHelper.TRACKER_DB_GYR_Z, gpsInfo.getGyroscopez());
-        values.put(DbHelper.TRACKER_DB_TITLE, gpsInfo.getTitle());
+        values.put(DbHelper.TRACKER_DB_NAME, gpsInfo.getName());
         values.put(DbHelper.TRACKER_DB_TIME, gpsInfo.getTime());
         return values;
     }
@@ -62,7 +62,40 @@ public class GPSInfoHelper extends BaseDao{
 				gpsInfo.setGyroscopex(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_GYR_X)));
 				gpsInfo.setGyroscopey(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_GYR_Y)));
 				gpsInfo.setGyroscopez(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_GYR_Z)));
-				gpsInfo.setTitle(cursor.getString(cursor.getColumnIndex(DbHelper.TRACKER_DB_TITLE)));
+				gpsInfo.setName(cursor.getString(cursor.getColumnIndex(DbHelper.TRACKER_DB_NAME)));
+				gpsInfo.setTime(cursor.getLong(cursor.getColumnIndex(DbHelper.TRACKER_DB_TIME)));
+				list.add(gpsInfo);
+			} while(cursor.moveToNext());	
+
+		}
+		
+		if (cursor != null) cursor.close();
+		return list;
+	}
+    
+    public List<GPSInfo> getGPSPointRoute() {
+
+    	List<GPSInfo> list = null;
+		String sql = "SELECT * FROM " + DbHelper.TRACKER_DB_TABLE + " GROUP BY " + DbHelper.TRACKER_DB_NAME;
+		
+		Cursor cursor = db.rawQuery(sql, null);
+		
+		if (cursor.getCount() != 0) {
+			list = new ArrayList<GPSInfo>();
+			cursor.moveToFirst();
+			do {
+				GPSInfo gpsInfo = new GPSInfo();
+				gpsInfo.setId(cursor.getInt(cursor.getColumnIndex(DbHelper.TRACKER_DB_ID)));
+				gpsInfo.setLatitude(cursor.getDouble(cursor.getColumnIndex(DbHelper.TRACKER_DB_LATITUDE)));
+				gpsInfo.setLongitude(cursor.getDouble(cursor.getColumnIndex(DbHelper.TRACKER_DB_LONGITUDE)));
+				gpsInfo.setAccuracy(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_ACCURACY)));
+				gpsInfo.setAcceleration(cursor.getDouble(cursor.getColumnIndex(DbHelper.TRACKER_DB_ACCEL)));
+				gpsInfo.setSpeed(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_SPEED)));
+				gpsInfo.setBearing(cursor.getDouble(cursor.getColumnIndex(DbHelper.TRACKER_DB_BEARING)));
+				gpsInfo.setGyroscopex(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_GYR_X)));
+				gpsInfo.setGyroscopey(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_GYR_Y)));
+				gpsInfo.setGyroscopez(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_GYR_Z)));
+				gpsInfo.setName(cursor.getString(cursor.getColumnIndex(DbHelper.TRACKER_DB_NAME)));
 				gpsInfo.setTime(cursor.getLong(cursor.getColumnIndex(DbHelper.TRACKER_DB_TIME)));
 				list.add(gpsInfo);
 			} while(cursor.moveToNext());	
@@ -93,13 +126,54 @@ public class GPSInfoHelper extends BaseDao{
 				gpsInfo.setGyroscopex(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_GYR_X)));
 				gpsInfo.setGyroscopey(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_GYR_Y)));
 				gpsInfo.setGyroscopez(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_GYR_Z)));
-				gpsInfo.setTitle(cursor.getString(cursor.getColumnIndex(DbHelper.TRACKER_DB_TITLE)));
+				gpsInfo.setName(cursor.getString(cursor.getColumnIndex(DbHelper.TRACKER_DB_NAME)));
 				gpsInfo.setTime(cursor.getLong(cursor.getColumnIndex(DbHelper.TRACKER_DB_TIME)));
 			} while(cursor.moveToNext());
 		}
 		
 		if (cursor != null) cursor.close();
 		return gpsInfo;
+    }
+    
+    public List<GPSInfo> getRoutePoints(String name) {
+    	List<GPSInfo> list = null;
+    	
+    	String[] selectionArgs = new String[] { name };
+		Cursor cursor = db.query(DbHelper.TRACKER_DB_TABLE, null, 
+				DbHelper.TRACKER_DB_NAME + "=?", selectionArgs, null, null, null, null);
+		
+    	/*String sql = "SELECT * FROM " + DbHelper.TRACKER_DB_TABLE + " WHERE " + DbHelper.TRACKER_DB_NAME + " = " + name;
+    	Cursor cursor = db.rawQuery(sql, null);*/
+		
+		if (cursor.getCount() != 0) {
+			list = new ArrayList<GPSInfo>();
+			cursor.moveToFirst();
+			do {
+				GPSInfo gpsInfo = new GPSInfo();
+				gpsInfo.setId(cursor.getInt(cursor.getColumnIndex(DbHelper.TRACKER_DB_ID)));
+				gpsInfo.setLatitude(cursor.getDouble(cursor.getColumnIndex(DbHelper.TRACKER_DB_LATITUDE)));
+				gpsInfo.setLongitude(cursor.getDouble(cursor.getColumnIndex(DbHelper.TRACKER_DB_LONGITUDE)));
+				gpsInfo.setAccuracy(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_ACCURACY)));
+				gpsInfo.setAcceleration(cursor.getDouble(cursor.getColumnIndex(DbHelper.TRACKER_DB_ACCEL)));
+				gpsInfo.setSpeed(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_SPEED)));
+				gpsInfo.setBearing(cursor.getDouble(cursor.getColumnIndex(DbHelper.TRACKER_DB_BEARING)));
+				gpsInfo.setGyroscopex(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_GYR_X)));
+				gpsInfo.setGyroscopey(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_GYR_Y)));
+				gpsInfo.setGyroscopez(cursor.getFloat(cursor.getColumnIndex(DbHelper.TRACKER_DB_GYR_Z)));
+				gpsInfo.setName(cursor.getString(cursor.getColumnIndex(DbHelper.TRACKER_DB_NAME)));
+				gpsInfo.setTime(cursor.getLong(cursor.getColumnIndex(DbHelper.TRACKER_DB_TIME)));
+				list.add(gpsInfo);
+			} while(cursor.moveToNext());	
+
+		}
+		
+		if (cursor != null) cursor.close();
+		return list;
+    }
+    
+    public boolean deleteRow(String name) {
+        String where = DbHelper.TRACKER_DB_NAME + " = '" + name + "'";
+        return db.delete(DbHelper.TRACKER_DB_TABLE, where, null) != 0;
     }
 
 	public void cleanOldRecords() {

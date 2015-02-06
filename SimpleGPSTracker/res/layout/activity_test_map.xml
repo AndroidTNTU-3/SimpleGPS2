@@ -44,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:layout_marginRight="11.0dip"
+        android:layout_marginRight="9.0dip"
         android:layout_marginTop="62.0dip"
         android:orientation="vertical" >
 
@@ -91,6 +91,57 @@
             android:contentDescription="@string/empty"
             android:padding="3dp"
             android:src="@drawable/list_selector" />
+        
+    </LinearLayout>
+    
+    <LinearLayout 
+        android:id="@+id/llRouteList" 
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:background="@color/gpsInfoBackgroundColor" 
+        android:padding="6.0dip"
+        android:layout_margin="6.0dip"
+        android:visibility="gone" 
+        android:layout_width="match_parent" 
+        android:layout_height="300dp">
+        
+        <LinearLayout 
+            android:orientation="horizontal" 
+            android:id="@+id/llRouteHeader" 
+            android:background="@color/headerPressed_bg" 
+            android:layout_width="fill_parent" 
+            android:layout_height="wrap_content">
+            
+            <ImageView 
+                android:layout_gravity="start" 
+                android:id="@+id/ivRouteExit" 
+                android:layout_width="wrap_content" 
+                android:layout_height="wrap_content" 
+                android:layout_marginTop="2.0dip" 
+                android:src="@android:drawable/arrow_up_float" 
+                android:contentDescription="@string/empty" />            
+            
+            <TextView 
+                android:textColor="@color/headerPressed_text_color" 
+                android:id="@+id/tvMyRoute" 
+                android:text="@string/myRoute" 
+                style="@style/TabHeaderStyle"
+                android:layout_width="wrap_content" 
+                android:layout_height="wrap_content"  />
+            
+        </LinearLayout>
+        
+        <ListView android:id="@+id/lvMyRoute" 
+            android:visibility="gone" 
+            android:layout_width="fill_parent" 
+            android:layout_height="fill_parent" 
+            android:layout_marginTop="10.0dip" 
+            android:cacheColorHint="#00000000" 
+            android:divider="@android:drawable/divider_horizontal_dark" 
+         />
+
+
+        
     </LinearLayout>
 
 </FrameLayout>

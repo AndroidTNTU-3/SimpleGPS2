@@ -10,6 +10,7 @@ import com.example.simplegpstracker.kalman.KalmanManager;
 import com.google.android.gms.maps.model.LatLng;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Criteria;
@@ -39,6 +40,7 @@ public class LocationLoader implements LocationListener, UnregisterCallBack{
 	private final static int MIN_DISTANCE = 5;
 		
 	TrackService service;
+	GpsStatus.Listener gpsStatusListener;
 
 	
 	public static interface LocationLoaderCallBack{
@@ -87,7 +89,7 @@ public class LocationLoader implements LocationListener, UnregisterCallBack{
 		if (providers.equals("GPS")) {
 			provider = LocationManager.GPS_PROVIDER;
 			
-			GpsStatus.Listener gpsStatusListener = new GpsStatus.Listener() {
+			gpsStatusListener = new GpsStatus.Listener() {
 	            @Override
 	            public void onGpsStatusChanged(int event) {
 	                if (event == GpsStatus.GPS_EVENT_SATELLITE_STATUS || event == GpsStatus.GPS_EVENT_FIRST_FIX) {
@@ -251,6 +253,11 @@ public class LocationLoader implements LocationListener, UnregisterCallBack{
 	public void onLocationChanged(Location location) {
 		latitude = location.getLatitude();
 		longitude = location.getLongitude();
+				
+		Log.i("DEBUG", " lon:" + Double.toString(latitude));
+		
+		Log.i("DEBUG", " lat:" + Double.toString(longitude));
+		
 	}
 
 	@Override
@@ -274,7 +281,7 @@ public class LocationLoader implements LocationListener, UnregisterCallBack{
 	//unregistering updates after stop service
 	@Override
 	public void Unregister() {	
-		
+		locationManager.removeGpsStatusListener(gpsStatusListener);
 		locationManager.removeUpdates(this);
 		//locationManager.removeGpsStatusListener(gpsStatusListener);
 	}

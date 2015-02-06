@@ -2,6 +2,7 @@ package com.example.simplegpstracker;
 
 import java.security.Provider;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +22,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -69,12 +71,26 @@ public class TrackService extends Service {
     private LocationManager locationManager;
     SensorScanner sensor;
     Context context;
+    ServiceBinder binder = new ServiceBinder();
     
 	KalmanManager km;
+	
+	List<GPSInfo> list;
     
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return binder;
+    }
+    
+    public class ServiceBinder extends Binder {
+        /**
+         * Returns the instance of this service for a client to make method calls on it.
+         * @return the instance of this service.
+         */
+        public TrackService getService() {
+            return TrackService.this;
+        }
+ 
     }
  
     @Override
@@ -86,12 +102,14 @@ public class TrackService extends Service {
     	
         context = getApplicationContext();
         
+        list = new ArrayList<GPSInfo>();
+        
     	locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);	
     	
     	kalmanFilter = preferences.getString("kalman", "off");
     	Log.i("DEBUG", " Time:" + refreshTime);
         helper = new GPSInfoHelper(getApplicationContext());
-        helper.cleanOldRecords();
+        //helper.cleanOldRecords();
         kalmanHelper = new KalmanInfoHelper(context);
         kalmanHelper.cleanOldRecords();
 
@@ -171,10 +189,13 @@ public class TrackService extends Service {
 		            		info.setAccuracy(location.getAccuracy());
 		            		info.setAcceleration(info.getAcceleration());
 		            		info.setSpeed(location.getSpeed());
-		            		info.setTitle("Track1");
+		            		info.setName("Track1");
 		            		info.setTime(System.currentTimeMillis());
 		            		
-		            		helper.insert(info);
+		            		synchronized (list) {
+		            			list.add(info);
+		            		}
+		            		//helper.insert(info);
 		            		
 		            		count = locationLoader.getSatelliteCount();
 		            		
@@ -221,6 +242,17 @@ public class TrackService extends Service {
         }
     }
     
+    //get a obtained data(the rout)
+    public List<GPSInfo> getList(){
+    	return list;
+    }
+    
+    public void stop(){
+        locationLoader.Unregister();
+        sensor.Unregister();
+    	mTimer.cancel();
+    }
+    
   //registering callback
   	public void setCallBack(UnregisterCallBack unregisterCallBack) {
   		this.unregisterCallBack = unregisterCallBack;
@@ -228,9 +260,7 @@ public class TrackService extends Service {
     
     public void onDestroy() {
         super.onDestroy();
-        locationLoader.Unregister();
-        sensor.Unregister();
-        mTimer.cancel();
+        
         helper.closeDB();
         
         //prevention of memory leak

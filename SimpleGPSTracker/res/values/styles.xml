@@ -16,5 +16,28 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
+    
+    <style name="TabHeaderStyle">
+        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:textColor">@color/header_text_color</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingTop">4.0dip</item>
+        <item name="android:paddingBottom">6.0dip</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1.0</item>
+    </style>    
+        <style name="RouteRow1TextStyle">
+        <item name="android:textSize">@dimen/routerow1_text_size</item>
+        <item name="android:textColor">@color/routerow1_text_color</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="RouteRow2TextStyle">
+        <item name="android:textSize">@dimen/routerow2_text_size</item>
+        <item name="android:textColor">@color/routerow2_text_color</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
 
 </resources>

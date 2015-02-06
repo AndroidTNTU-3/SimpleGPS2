@@ -42,7 +42,7 @@ public class FactoryPortC extends FactoryKalmanBuilder{
  		kalmanInfo.setLatitude(kalmanLocation.getLatitude());
  		kalmanInfo.setAccuracy(kalmanLocation.getAccuracy());
  		//kalmanInfo.setAcceleration(kalmanLocation.getAcceleration());
- 		kalmanInfo.setTitle("Track1");
+ 		kalmanInfo.setName("Track1");
  		kalmanInfo.setTime(System.currentTimeMillis());
  		kalmanHelper.insert(kalmanInfo);
 		

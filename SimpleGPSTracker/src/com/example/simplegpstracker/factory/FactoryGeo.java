@@ -39,7 +39,7 @@ public class FactoryGeo extends FactoryKalmanBuilder{
 		kalmanInfo.setId(1);
  		kalmanInfo.setLongitude(kalmanLocation.getLongitude());
  		kalmanInfo.setLatitude(kalmanLocation.getLatitude());
- 		kalmanInfo.setTitle("Track1");
+ 		kalmanInfo.setName("Track1");
  		kalmanInfo.setTime(System.currentTimeMillis());
  		kalmanHelper.insert(kalmanInfo);
 	}

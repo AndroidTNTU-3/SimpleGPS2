@@ -62,6 +62,18 @@
     <string name="orientation_x">Orientation X</string>
     <string name="orientation_y">Orientation y</string>
     <string name="orientation_z">Orientation z</string>
+    
+    <string name="save">Save</string>
+    <string name="no">No</string>
+    <string name="maybe">Maybe</string>
+    <string name="dialog_title_save">Maybe</string>
+    <string name="dialog_message_save">Maybe</string>
+    <string name="enter_route_name">Enter route name:</string>
+    <string name="send_hint">Send data to server</string>
+    <string name="time_start">Time start: </string>
+    
+    <string name="menu_edit">Edit</string>
+    <string name="menu_delete">Delete</string>
 
     <color name="bg_color">#ffffff</color>
 
@@ -121,5 +133,6 @@
     </string-array>
 
     <string name="title_activity_test_map">TestMapActivity</string>
+   	<string name="myRoute">My route</string>
 
 </resources>
